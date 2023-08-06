@@ -13,11 +13,11 @@ import java.util.Map;
 
 @SpringBootApplication
 @Controller
-public class GettingStartedApplication {
+public class Main {
     private final DataSource dataSource;
 
     @Autowired
-    public GettingStartedApplication(DataSource dataSource) {
+    public Main(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -49,6 +49,6 @@ public class GettingStartedApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(GettingStartedApplication.class, args);
+        SpringApplication.run(Main.class, args);
     }
 }
