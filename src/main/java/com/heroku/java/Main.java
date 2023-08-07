@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @SpringBootApplication
-@Controller
+@RestController
 public class Main {
     private final DataSource dataSource;
 
@@ -46,6 +47,16 @@ public class Main {
             model.put("message", t.getMessage());
             return "error";
         }
+    }
+    @GetMapping("/getHello")
+    public String getHello() {
+        // Your logic to fetch and return the list of users from a data source
+        return "Hello Vlad!";
+    }
+
+    @GetMapping("/error")
+    public String getError() {
+        return "Error!";
     }
 
     public static void main(String[] args) {

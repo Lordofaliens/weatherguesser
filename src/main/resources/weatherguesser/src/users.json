@@ -1,0 +1,20 @@
+[
+  {
+    "id": "o89483fjsdb43",
+    "name": "Vlad",
+    "password": "Vlad_2907",
+    "location": "Rotterdam",
+    "accuracy": "69",
+    "registration": "20-05-2023",
+    "highstreak": "5"
+  },
+  {
+    "id": "gygiuh785479845",
+    "name": "Masha",
+    "password": "Masha_2002",
+    "location": "Rotterdam",
+    "accuracy": "45",
+    "registration": "22-07-2023",
+    "highstreak": "7"
+  }
+]
