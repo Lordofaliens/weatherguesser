@@ -8,13 +8,15 @@ import java.util.UUID;
 import java.time.LocalDateTime;
 
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class User {
     @Id
-    private String id;
+    private ObjectId id;
+    private String userId;
     private String name;
     private String password;
     private Date registration;
@@ -23,11 +25,11 @@ public class User {
     private int highStreak;
 
 
-    public String getId() {
-        return this.id;
+    public String getUserId() {
+        return this.userId;
     }
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -53,7 +55,7 @@ public class User {
     }
 
     public int getAccuracy() { return this.accuracy; }
-    public void setLocation(int accuracy) {
+    public void setAccuracy(int accuracy) {
         this.accuracy = accuracy;
     }
 
@@ -63,7 +65,7 @@ public class User {
     }
 
     public User() {
-        this.id = UUID.randomUUID().toString();
+        this.userId = UUID.randomUUID().toString();
         this.name = "John Doe";
         this.password = "1111";
         this.registration = generateRegistration();
@@ -73,7 +75,7 @@ public class User {
     }
 
     public User(String name, String password) {
-        this.id = UUID.randomUUID().toString();
+        this.userId = UUID.randomUUID().toString();
         this.name = name;
         this.password = password;
         this.registration = generateRegistration();
@@ -90,4 +92,5 @@ public class User {
         return date;
     }
 
+    //ADD USER CURRENT STREAK
 }

@@ -3,29 +3,29 @@ package com.heroku.java.Controllers;
 import java.io.IOException;
 import java.util.Map;
 
+import com.heroku.java.Exceptions.UnknownLocationException;
+import com.heroku.java.Services.WeatherService;
 import com.heroku.java.Weather.Weather;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/weather")
 public class WeatherController {
-    @GetMapping("/api/weather")
-    public String hello(@RequestParam("hello") String hello) {
-        return "Hello World " + hello;
-    }
+    @Autowired
+    private WeatherService weatherService;
 
-
-
-    public ResponseEntity<Map<String, String>> getWeatherData(@RequestParam("location") String location) {
-        Weather weather = new Weather(location);
+    //Improve when database already has this location
+    @GetMapping("/updateByLocation")
+    public ResponseEntity<Weather> updateWeatherData(@RequestParam("lat") String latS, @RequestParam("lon") String lonS) throws UnknownLocationException {
         try {
-            Map<String, String> weatherData = weather.updateWeatherData();
-            return ResponseEntity.ok(weatherData);
+            double lat = Double.parseDouble(latS);
+            double lon = Double.parseDouble(lonS);
+            Weather updatedWeather = weatherService.updateWeatherData(lat,lon);
+            if(updatedWeather.getLocation()=="unknown") throw new UnknownLocationException();
+            return ResponseEntity.ok(updatedWeather);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
