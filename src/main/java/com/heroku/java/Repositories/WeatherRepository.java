@@ -1,6 +1,6 @@
 package com.heroku.java.Repositories;
 
-import com.heroku.java.Weather.Weather;
+import com.heroku.java.Entitites.Weather.Weather;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;

@@ -4,342 +4,439 @@
     "temperature": 24,
     "condition": "Sunny",
     "latitude": 35.6895,
-    "longitude": 139.6917
+    "longitude": 139.6917,
+    "difficulty": "hard"
   },
   {
     "location": "New York",
     "temperature": 22,
     "condition": "Partly Cloudy",
     "latitude": 40.7128,
-    "longitude": -74.0060
+    "longitude": -74.0060,
+    "difficulty": "easy"
   },
   {
     "location": "London",
     "temperature": 18,
     "condition": "Cloudy",
     "latitude": 51.5074,
-    "longitude": -0.1278
+    "longitude": -0.1278,
+    "difficulty": "hard"
   },
   {
     "location": "Paris",
     "temperature": 20,
     "condition": "Clear",
     "latitude": 48.8566,
-    "longitude": 2.3522
+    "longitude": 2.3522,
+    "difficulty": "medium"
   },
   {
     "location": "Los Angeles",
     "temperature": 28,
     "condition": "Sunny",
     "latitude": 34.0522,
-    "longitude": -118.2437
+    "longitude": -118.2437,
+    "difficulty": "easy"
   },
   {
     "location": "Sydney",
     "temperature": 16,
     "condition": "Partly Cloudy",
     "latitude": -33.8688,
-    "longitude": 151.2093
+    "longitude": 151.2093,
+    "difficulty": "easy"
   },
   {
     "location": "Rio de Janeiro",
     "temperature": 26,
     "condition": "Clear",
     "latitude": -22.9068,
-    "longitude": -43.1729
+    "longitude": -43.1729,
+    "difficulty": "medium"
   },
   {
     "location": "Dubai",
     "temperature": 38,
     "condition": "Hot",
     "latitude": 25.276987,
-    "longitude": 55.296249
+    "longitude": 55.296249,
+    "difficulty": "easy"
   },
   {
     "location": "Singapore",
     "temperature": 30,
     "condition": "Humid",
     "latitude": 1.3521,
-    "longitude": 103.8198
-  },
-  {
-    "location": "Moscow",
-    "temperature": 14,
-    "condition": "Partly Cloudy",
-    "latitude": 55.7558,
-    "longitude": 37.6173
+    "longitude": 103.8198,
+    "difficulty": "hard"
   },
   {
     "location": "Beijing",
     "temperature": 26,
     "condition": "Clear",
     "latitude": 39.9042,
-    "longitude": 116.4074
+    "longitude": 116.4074,
+    "difficulty": "easy"
   },
   {
     "location": "Cairo",
     "temperature": 32,
     "condition": "Sunny",
     "latitude": 30.0444,
-    "longitude": 31.2357
+    "longitude": 31.2357,
+    "difficulty": "easy"
   },
   {
     "location": "Buenos Aires",
     "temperature": 18,
     "condition": "Partly Cloudy",
     "latitude": -34.6118,
-    "longitude": -58.4173
+    "longitude": -58.4173,
+    "difficulty": "medium"
   },
   {
     "location": "Rome",
     "temperature": 27,
     "condition": "Clear",
     "latitude": 41.9028,
-    "longitude": 12.4964
+    "longitude": 12.4964,
+    "difficulty": "easy"
   },
   {
     "location": "Toronto",
     "temperature": 20,
     "condition": "Cloudy",
     "latitude": 43.6532,
-    "longitude": -79.3832
+    "longitude": -79.3832,
+    "difficulty": "medium"
   },
   {
     "location": "Seoul",
     "temperature": 25,
     "condition": "Sunny",
     "latitude": 37.5665,
-    "longitude": 126.9780
+    "longitude": 126.9780,
+    "difficulty": "medium"
   },
   {
     "location": "Mumbai",
     "temperature": 30,
     "condition": "Humid",
     "latitude": 19.0760,
-    "longitude": 72.8777
+    "longitude": 72.8777,
+    "difficulty": "medium"
   },
   {
     "location": "Berlin",
     "temperature": 22,
     "condition": "Clear",
     "latitude": 52.5200,
-    "longitude": 13.4050
+    "longitude": 13.4050,
+    "difficulty": "easy"
   },
   {
     "location": "Mexico City",
     "temperature": 23,
     "condition": "Partly Cloudy",
     "latitude": 19.4326,
-    "longitude": -99.1332
+    "longitude": -99.1332,
+    "difficulty": "medium"
   },
   {
     "location": "Istanbul",
     "temperature": 30,
     "condition": "Clear",
     "latitude": 41.0082,
-    "longitude": 28.9784
+    "longitude": 28.9784,
+    "difficulty": "easy"
   },
   {
     "location": "São Paulo",
     "temperature": 21,
     "condition": "Partly Cloudy",
     "latitude": -23.5505,
-    "longitude": -46.6333
+    "longitude": -46.6333,
+    "difficulty": "easy"
   },
   {
     "location": "Bangkok",
     "temperature": 28,
     "condition": "Humid",
     "latitude": 13.7563,
-    "longitude": 100.5018
+    "longitude": 100.5018,
+    "difficulty": "medium"
   },
   {
     "location": "Shanghai",
     "temperature": 29,
     "condition": "Clear",
     "latitude": 31.2304,
-    "longitude": 121.4737
+    "longitude": 121.4737,
+    "difficulty": "medium"
   },
   {
     "location": "Cape Town",
     "temperature": 18,
     "condition": "Sunny",
     "latitude": -33.9249,
-    "longitude": 18.4241
+    "longitude": 18.4241,
+    "difficulty": "easy"
   },
   {
     "location": "Melbourne",
     "temperature": 14,
     "condition": "Partly Cloudy",
     "latitude": -37.8136,
-    "longitude": 144.9631
+    "longitude": 144.9631,
+    "difficulty": "easy"
   },
   {
     "location": "Vancouver",
     "temperature": 17,
     "condition": "Cloudy",
     "latitude": 49.2827,
-    "longitude": -123.1207
+    "longitude": -123.1207,
+    "difficulty": "medium"
   },
   {
     "location": "Hong Kong",
     "temperature": 31,
     "condition": "Hot",
     "latitude": 22.3193,
-    "longitude": 114.1694
+    "longitude": 114.1694,
+    "difficulty": "medium"
   },
   {
     "location": "Amsterdam",
     "temperature": 19,
     "condition": "Clear",
     "latitude": 52.3676,
-    "longitude": 4.9041
+    "longitude": 4.9041,
+    "difficulty": "hard"
   },
   {
     "location": "Madrid",
     "temperature": 24,
     "condition": "Sunny",
     "latitude": 40.4168,
-    "longitude": -3.7038
+    "longitude": -3.7038,
+    "difficulty": "medium"
   },
   {
     "location": "Riyadh",
     "temperature": 40,
     "condition": "Hot",
     "latitude": 24.7136,
-    "longitude": 46.6753
+    "longitude": 46.6753,
+    "difficulty": "easy"
   },
   {
     "location": "Santiago",
     "temperature": 20,
     "condition": "Clear",
     "latitude": -33.4489,
-    "longitude": -70.6693
+    "longitude": -70.6693,
+    "difficulty": "medium"
   },
   {
     "location": "Zurich",
     "temperature": 21,
     "condition": "Partly Cloudy",
     "latitude": 47.3769,
-    "longitude": 8.5417
+    "longitude": 8.5417,
+    "difficulty": "easy"
   },
   {
     "location": "Jakarta",
     "temperature": 32,
     "condition": "Humid",
     "latitude": -6.2088,
-    "longitude": 106.8456
+    "longitude": 106.8456,
+    "difficulty": "hard"
   },
   {
     "location": "Kuala Lumpur",
     "temperature": 28,
     "condition": "Humid",
     "latitude": 3.1390,
-    "longitude": 101.6869
+    "longitude": 101.6869,
+    "difficulty": "hard"
   },
   {
     "location": "Osaka",
     "temperature": 25,
     "condition": "Sunny",
     "latitude": 34.6937,
-    "longitude": 135.5023
+    "longitude": 135.5023,
+    "difficulty": "hard"
   },
   {
     "location": "Montreal",
     "temperature": 19,
     "condition": "Cloudy",
     "latitude": 45.5017,
-    "longitude": -73.5673
+    "longitude": -73.5673,
+    "difficulty": "medium"
   },
   {
     "location": "Stockholm",
     "temperature": 17,
     "condition": "Partly Cloudy",
     "latitude": 59.3293,
-    "longitude": 18.0686
+    "longitude": 18.0686,
+    "difficulty": "medium"
   },
   {
     "location": "Copenhagen",
     "temperature": 20,
     "condition": "Clear",
     "latitude": 55.6761,
-    "longitude": 12.5683
+    "longitude": 12.5683,
+    "difficulty": "hard"
   },
   {
     "location": "Athens",
     "temperature": 29,
     "condition": "Clear",
     "latitude": 37.9838,
-    "longitude": 23.7275
+    "longitude": 23.7275,
+    "difficulty": "medium"
   },
   {
     "location": "Dublin",
     "temperature": 17,
     "condition": "Cloudy",
     "latitude": 53.3498,
-    "longitude": -6.2603
+    "longitude": -6.2603,
+    "difficulty": "hard"
   },
   {
     "location": "Vienna",
     "temperature": 23,
     "condition": "Clear",
     "latitude": 48.2082,
-    "longitude": 16.3738
+    "longitude": 16.3738,
+    "difficulty": "medium"
   },
   {
     "location": "Lisbon",
     "temperature": 25,
     "condition": "Clear",
     "latitude": 38.7223,
-    "longitude": -9.1393
+    "longitude": -9.1393,
+    "difficulty": "medium"
   },
   {
     "location": "Brussels",
     "temperature": 20,
     "condition": "Partly Cloudy",
     "latitude": 50.8503,
-    "longitude": 4.3517
+    "longitude": 4.3517,
+    "difficulty": "hard"
   },
   {
     "location": "Munich",
     "temperature": 22,
     "condition": "Clear",
     "latitude": 48.1351,
-    "longitude": 11.5820
+    "longitude": 11.5820,
+    "difficulty": "medium"
   },
   {
     "location": "Helsinki",
     "temperature": 16,
     "condition": "Partly Cloudy",
     "latitude": 60.1695,
-    "longitude": 24.9354
+    "longitude": 24.9354,
+    "difficulty": "medium"
   },
   {
     "location": "Edinburgh",
     "temperature": 18,
     "condition": "Cloudy",
     "latitude": 55.9533,
-    "longitude": -3.1883
+    "longitude": -3.1883,
+    "difficulty": "hard"
   },
   {
     "location": "Budapest",
     "temperature": 26,
     "condition": "Clear",
     "latitude": 47.4979,
-    "longitude": 19.0402
+    "longitude": 19.0402,
+    "difficulty": "medium"
   },
   {
     "location": "Warsaw",
     "temperature": 24,
     "condition": "Clear",
     "latitude": 52.2297,
-    "longitude": 21.0122
+    "longitude": 21.0122,
+    "difficulty": "easy"
   },
   {
     "location": "Prague",
     "temperature": 25,
     "condition": "Clear",
     "latitude": 50.0755,
-    "longitude": 14.4378
+    "longitude": 14.4378,
+    "difficulty": "easy"
+  },
+  {
+    "location": "Rotterdam",
+    "temperature": 20,
+    "condition": "Cloudy",
+    "latitude": 51.9225,
+    "longitude": 4.47917,
+    "difficulty": "hard"
+  },
+  {
+    "location": "Marcel",
+    "temperature": 22,
+    "condition": "Partly Cloudy",
+    "latitude": 51.5074,
+    "longitude": -0.1278,
+    "difficulty": "medium"
+  },
+  {
+    "location": "Manchester",
+    "temperature": 18,
+    "condition": "Rainy",
+    "latitude": 53.483959,
+    "longitude": -2.244644,
+    "difficulty": "hard"
+  },
+  {
+    "location": "Liverpool",
+    "temperature": 17,
+    "condition": "Rainy",
+    "latitude": 53.4084,
+    "longitude": -2.9916,
+    "difficulty": "hard"
+  },
+  {
+    "location": "Cardiff",
+    "temperature": 19,
+    "condition": "Cloudy",
+    "latitude": 51.4816,
+    "longitude": -3.1791,
+    "difficulty": "hard"
+  },
+  {
+    "location": "Kyiv",
+    "temperature": 25,
+    "condition": "Sunny",
+    "latitude": 50.4501,
+    "longitude": 30.5234,
+    "difficulty": "easy"
+  },
+  {
+    "location": "Lviv",
+    "temperature": 21,
+    "condition": "Partly Cloudy",
+    "latitude": 49.8397,
+    "longitude": 24.0297,
+    "difficulty": "easy"
   }
 ]

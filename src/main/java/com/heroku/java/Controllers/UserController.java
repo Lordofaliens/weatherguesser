@@ -1,19 +1,14 @@
 package com.heroku.java.Controllers;
 
+import com.heroku.java.Exceptions.InvalidGuessException;
 import com.heroku.java.Exceptions.UnknownUserException;
 import com.heroku.java.Services.UserService;
-import com.heroku.java.User.User;
-import com.heroku.java.Weather.Weather;
-import org.bson.types.ObjectId;
+import com.heroku.java.Entitites.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,8 +48,8 @@ public class UserController {
     }
 
     @GetMapping("/add")
-    public ResponseEntity<User> add(@RequestParam("name") String name, @RequestParam("password") String password) throws UnknownUserException {
-        User createdUser = userService.add(name, password);
+    public ResponseEntity<User> add(@RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("email") String email) throws UnknownUserException {
+        User createdUser = userService.add(name, password, email);
         return ResponseEntity.ok(createdUser);
     }
 
@@ -65,9 +60,24 @@ public class UserController {
         return ResponseEntity.ok(0);
     }
 
+    @GetMapping("/makeGuess")
+    public ResponseEntity<Integer> delete(@RequestParam("userId") String userId, @RequestParam("city") String city, @RequestParam("guess") String guess) throws InvalidGuessException {
+        userService.makeGuess(userId, city, guess);
+        return ResponseEntity.ok(0);
+    }
 
 
-    //TO DO LIST
-    //CHANGE PASSWORD FUNCTION WITH USING EMAIL CODE ACTIVATION
-    //add atributes for another app features
+
+//    @PostMapping("/password")
+//    public ResponseEntity<String> requestPasswordReset(@RequestParam("email") String email) throws tokenException {
+//        userService.requestPasswordReset(email);
+//        return ResponseEntity.ok("Password reset link sent to your email!");
+//    }
+//
+//    @PostMapping("/password/{token}")
+//    public ResponseEntity<String> resetPassword(@PathVariable String token, @RequestParam("password") String newPassword) {
+//        userService.resetPassword(token, newPassword);
+//        return ResponseEntity.ok("Password reset successful!");
+//    }
+
 }

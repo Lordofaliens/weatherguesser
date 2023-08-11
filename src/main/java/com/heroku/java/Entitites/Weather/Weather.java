@@ -1,25 +1,11 @@
-package com.heroku.java.Weather;
+package com.heroku.java.Entitites.Weather;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.DefaultAsyncHttpClient;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
-
-@Document(collection="weather-db")
+@Document(collection="weather")
 public class Weather {
     @Id
     private ObjectId id;
@@ -28,6 +14,7 @@ public class Weather {
     private String condition;
     private double latitude;
     private double longitude;
+    private String difficulty;
 
     public String getLocation() {
         return this.location;
@@ -49,6 +36,10 @@ public class Weather {
         return this.longitude;
     }
     public void setLongitude(double longitude) { this.longitude = longitude; }
+    public String getDifficulty() {
+        return this.difficulty;
+    }
+    public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
 
     public Weather() {
         this.location = "unknown";

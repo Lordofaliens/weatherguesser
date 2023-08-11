@@ -1,5 +1,6 @@
 package com.heroku.java.Repositories;
 
+import com.heroku.java.Entitites.LeaderBoard.LeaderBoard;
 import com.heroku.java.Entitites.User.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -10,10 +11,7 @@ import java.util.Optional;
 
 @EnableMongoRepositories
 @Repository
-public interface UserRepository extends MongoRepository<User, ObjectId> {
-    Optional<User> findUserByUserId(String userId);
+public interface LeaderBoardRepository extends MongoRepository<LeaderBoard, ObjectId> {
+    Optional<LeaderBoard> findLeaderBoardByLeaderBoardId(int leaderBoardId);
 
-    Optional<User> findByEmail(String email);
-
-//    Optional<User> findByResetToken(String resetToken);
 }
