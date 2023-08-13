@@ -1,5 +1,9 @@
 package com.heroku.java.Entitites.User;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.*;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -10,6 +14,7 @@ import java.time.LocalDateTime;
 
 
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,8 +34,8 @@ public class User {
     private int rating;
     private String friends;
     private List<String> guess;
-    private String resetToken;
-    private Date resetTokenExpiry;
+    private String token;
+    private Date tokenExpiry;
 
 
 
@@ -93,14 +98,14 @@ public class User {
     public List<String> getGuess() {return this.guess; }
     public void setGuess(List<String> guess) {this.guess = guess;}
 
-    public String getResetToken() { return this.resetToken; }
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
+    public String getToken() { return this.token; }
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public Date getResetTokenExpiry() { return this.resetTokenExpiry; }
-    public void setResetTokenExpiry(Date resetTokenExpiry) {
-        this.resetTokenExpiry = resetTokenExpiry;
+    public Date getTokenExpiry() { return this.tokenExpiry; }
+    public void setTokenExpiry(Date tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
     }
 
     public User() {
@@ -109,37 +114,81 @@ public class User {
         this.password = "1111";
         this.email = "example@gmail.com";
         this.registration = generateRegistration();
-        this.location = "Rotterdam"; //change to API output;
+        this.location = generateLocation();
         this.accuracy = 0;
         this.highStreak = 0;
         this.currentStreak = 0;
-        this.rating = 0; //CHANGE TO NUMBER OF USERS PLUS 1
+        this.rating = 0;
         this.friends = "";
         this.guess = new ArrayList<String>();
     }
 
-    public User(String name, String password, String email) {
+    public User(int userDBLength) {
+        this.userId = UUID.randomUUID().toString();
+        this.name = "John Doe";
+        this.password = "1111";
+        this.email = "example@gmail.com";
+        this.registration = generateRegistration();
+        this.location = generateLocation();
+        this.accuracy = 0;
+        this.highStreak = 0;
+        this.currentStreak = 0;
+        this.rating = userDBLength+1;
+        this.friends = "";
+        this.guess = new ArrayList<String>();
+    }
+
+    public User(String name, String password, String email, int userDBLength) {
         this.userId = UUID.randomUUID().toString();
         this.name = name;
         this.password = password;
         this.email = email;
         this.registration = generateRegistration();
-        this.location = "Rotterdam"; //change to API output;
+        this.location = generateLocation();
         this.accuracy = 0;
         this.highStreak = 0;
         this.currentStreak = 0;
-        this.rating = 0; //CHANGE TO NUMBER OF USERS PLUS 1
+        this.rating = userDBLength+1;
         this.friends = "";
         this.guess = new ArrayList<String>();
     }
 
-    public Date generateRegistration() {
+    private Date generateRegistration() {
         LocalDateTime localDateTime = LocalDateTime.now();
         ZoneId zoneId = ZoneId.systemDefault();
         Instant instant = localDateTime.atZone(zoneId).toInstant();
         Date date = Date.from(instant);
         return date;
     }
-}
 
-//ADD ability to make guesses, add guess array
+    private String generateLocation() {
+        try {
+            String apiKey = "d31cf59595d8a49b7f7aa6c844d5057d";
+            String apiUrl = "http://api.ipstack.com/check?access_key=" + apiKey;
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                String city = jsonResponse.getString("city");
+
+                return city;
+            } else {
+                System.out.println("Request failed with response code: " + responseCode);
+            }
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "Unknown";
+    }
+}

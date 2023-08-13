@@ -1,15 +1,24 @@
 package com.heroku.java.Controllers;
 
 import com.heroku.java.Exceptions.InvalidGuessException;
+import com.heroku.java.Exceptions.InvalidTokenException;
 import com.heroku.java.Exceptions.UnknownUserException;
 import com.heroku.java.Services.UserService;
 import com.heroku.java.Entitites.User.User;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -26,47 +35,57 @@ public class UserController {
         return new ResponseEntity<Optional<User>>(userService.getSingleUser(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/changeName")
-    public ResponseEntity<User> changeAccuracy(@RequestParam("userId") String userId, @RequestParam("name") String newName) throws UnknownUserException {
-        User updatedUser = userService.changeName(userId, newName);
+    @PostMapping("/login") //ADD JAVA SECURITY
+    public ResponseEntity<String> login(@RequestBody Map<String, String> data) throws InvalidTokenException {
+        return new ResponseEntity<>(this.userService.login(data.get("name"),data.get("password")), HttpStatus.OK);
+    }
+
+    @GetMapping("/changeName") //ADD JAVA SECURITY
+    public ResponseEntity<User> changeName(@RequestBody Map<String,String> data) throws UnknownUserException {
+        User updatedUser = userService.changeName(data.get("userId"), data.get("name"));
         if(updatedUser.getName()=="") throw new UnknownUserException();
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/changeHighStreak")
-    public ResponseEntity<User> changeHighStreak(@RequestParam("userId") String userId) throws UnknownUserException {
-        User updatedUser = userService.changeHighStreak(userId);
+    @GetMapping("/changeHighStreak") //ADD JAVA SECURITY
+    public ResponseEntity<User> changeHighStreak(@RequestBody Map<String,String> data) throws UnknownUserException {
+        User updatedUser = userService.changeHighStreak(data.get("userId"));
         if(updatedUser.getHighStreak()==-1) throw new UnknownUserException();
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/changeAccuracy")
-    public ResponseEntity<User> changeAccuracy(@RequestParam("userId") String userId, @RequestParam("acc") int newAcc) throws UnknownUserException {
-        User updatedUser = userService.changeAccuracy(userId, newAcc);
+    @GetMapping("/changeCurrentStreak") //ADD JAVA SECURITY
+    public ResponseEntity<User> changeCurrentStreak(@RequestBody Map<String,String> data) throws UnknownUserException {
+        User updatedUser = userService.changeCurrentStreak(data.get("userId"),Integer.parseInt(data.get("userId")));
+        if(updatedUser.getHighStreak()==-1) throw new UnknownUserException();
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/changeAccuracy") //ADD JAVA SECURITY
+    public ResponseEntity<User> changeAccuracy(@RequestBody Map<String,String> data) throws UnknownUserException {
+        User updatedUser = userService.changeAccuracy(data.get("userId"), Integer.parseInt(data.get("accuracy")));
         if(updatedUser.getAccuracy()==-1) throw new UnknownUserException();
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/add")
-    public ResponseEntity<User> add(@RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("email") String email) throws UnknownUserException {
-        User createdUser = userService.add(name, password, email);
+    @GetMapping("/add") //ADD JAVA SECURITY
+    public ResponseEntity<User> add(@RequestBody Map<String, String> data) throws UnknownUserException {
+        User createdUser = userService.add(data.get("name"), data.get("password"), data.get("email"));
         return ResponseEntity.ok(createdUser);
     }
 
-    @GetMapping("/delete")
-    public ResponseEntity<Integer> delete(@RequestParam("userId") String userId) throws UnknownUserException {
-        int deletedUser = userService.delete(userId);
+    @GetMapping("/delete") //ADD JAVA SECURITY
+    public ResponseEntity<Integer> delete(@RequestBody Map<String, String> data) throws UnknownUserException {
+        int deletedUser = userService.delete(data.get("userId"));
         if(deletedUser==1) throw new UnknownUserException();
         return ResponseEntity.ok(0);
     }
 
-    @GetMapping("/makeGuess")
-    public ResponseEntity<Integer> delete(@RequestParam("userId") String userId, @RequestParam("city") String city, @RequestParam("guess") String guess) throws InvalidGuessException {
-        userService.makeGuess(userId, city, guess);
+    @GetMapping("/makeGuess") //ADD JAVA SECURITY
+    public ResponseEntity<Integer> makeGuess(@RequestBody Map<String, String> data) throws InvalidGuessException {
+        userService.makeGuess(data.get("userId"), data.get("city"), data.get("guess"));
         return ResponseEntity.ok(0);
     }
-
-
 
 //    @PostMapping("/password")
 //    public ResponseEntity<String> requestPasswordReset(@RequestParam("email") String email) throws tokenException {

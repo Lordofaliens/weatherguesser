@@ -15,10 +15,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -95,10 +92,13 @@ public class WeatherService {
 
     public List<Weather> getWeatherByDifficulty(String diff) {
         List<Weather> weatherList = weatherRepository.findAll();
-        List<Weather> ans = weatherList
-                .stream()
-                .filter(w -> w.getDifficulty()==diff)
-                .collect(Collectors.toList());
+        List<Weather> ans = new ArrayList<>();
+        for(Weather w : weatherList) {
+            if(w.getDifficulty().equals(diff)) {
+                ans.add(w);
+            }
+        }
+        System.out.println(ans);
         return ans;
     }
 

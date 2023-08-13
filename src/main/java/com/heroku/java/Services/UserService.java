@@ -1,15 +1,22 @@
 package com.heroku.java.Services;
 
 import com.heroku.java.Exceptions.InvalidGuessException;
+import com.heroku.java.Exceptions.InvalidTokenException;
 import com.heroku.java.Repositories.UserRepository;
 import com.heroku.java.Entitites.User.User;
+import com.heroku.java.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -33,8 +40,22 @@ public class UserService {
         return userRepository.findUserByUserId(userId);
     }
 
+    public String login(String name, String password) throws InvalidTokenException{ //ADD JAVA SECURITY
+        Optional<User> user = this.userRepository.findByName(name);
+        if(user.isPresent() && user.get().getPassword().equals(password)) {
+            String token = TokenGenerator.generateBearerToken(user.get().getName());
+            mongoTemplate.update(User.class)
+                    .matching(Criteria.where("userId").is(user.get().getUserId()))
+                    .apply(new Update().set("token", token).set("tokenExpiry", Date.from(LocalDateTime.now().plusWeeks(1).atZone(ZoneId.systemDefault()).toInstant()))) //CHANGE 1 WEEK TO .ENV
+                    .first();
+            System.out.println("0");
+            return token;
+        } else System.out.println("1");
+        throw new InvalidTokenException("Exception during token registration");
+    }
+
     public User changeName(String userId, String newName) {
-        User uNew = new User();
+        User uNew = new User(this.userRepository.findAll().size());
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
             u.get().setName(newName);
@@ -56,7 +77,7 @@ public class UserService {
     }
 
     public User changeHighStreak(String userId) {
-        User uNew = new User();
+        User uNew = new User(this.userRepository.findAll().size());
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
             u.get().setHighStreak(u.get().getHighStreak()+1);
@@ -76,8 +97,27 @@ public class UserService {
         return uNew;
     }
 
+    public User changeCurrentStreak(String userId, int newStreak) {
+        User uNew = new User(this.userRepository.findAll().size());
+        Optional<User> u = this.getSingleUser(userId);
+        u.ifPresent((res) -> {
+            mongoTemplate.update(User.class)
+                    .matching(Criteria.where("userId").is(u.get().getUserId()))
+                    .apply(new Update().set("currentStreak", newStreak))
+                    .first();
+
+            uNew.setUserId(u.get().getUserId());
+            uNew.setHighStreak(u.get().getCurrentStreak());
+        });
+
+        if (!u.isPresent()) {
+            uNew.setCurrentStreak(-1);
+        }
+        return uNew;
+    }
+
     public User changeAccuracy(String userId, int newAcc) {
-        User uNew = new User();
+        User uNew = new User(this.userRepository.findAll().size());
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
             u.get().setAccuracy(newAcc);
@@ -97,7 +137,7 @@ public class UserService {
     }
 
     public User add(String name, String password, String email) {
-        User u = new User(name, password, email);
+        User u = new User(name, password, email, this.userRepository.findAll().size());
         mongoTemplate.insert(u);
         //rerender new leaderboard
         return u;
@@ -124,10 +164,16 @@ public class UserService {
                 }
             }
             guesses.add(new String(city+";"+guess));
+            System.out.println(userId+city+guess);
+            mongoTemplate.update(User.class)
+                    .matching(Criteria.where("userId").is(userId))
+                    .apply(new Update().set("guess", guesses))
+                    .first();
+
         } else throw new InvalidGuessException();
     }
 
-
+//ADD HANDLERS TO AVOID DUPLICATE NAMES / EMAILS
 
 
 //    public void requestPasswordReset(String email) throws tokenException {

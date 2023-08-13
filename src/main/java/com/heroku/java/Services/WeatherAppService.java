@@ -52,6 +52,6 @@ public class WeatherAppService {
             List<String> topUsersIds = this.leaderBoardService.sortNewLeaderBoard();
             this.randomDailyCity = this.weatherService.getDailyWeather();
         }, initialDelay, TimeUnit.DAYS.toMillis(1), TimeUnit.MILLISECONDS);
-
+        //CALCULATE PEOPLE's GUESSES, TERMINATE GUESS ARRAY, recalculate high-streaks and accuracy before updating leaderboard
     }
 }
