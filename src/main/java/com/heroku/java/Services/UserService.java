@@ -2,19 +2,18 @@ package com.heroku.java.Services;
 
 import com.heroku.java.Exceptions.InvalidGuessException;
 import com.heroku.java.Exceptions.InvalidTokenException;
+import com.heroku.java.Exceptions.UnknownUserException;
 import com.heroku.java.Repositories.UserRepository;
 import com.heroku.java.Entitites.User.User;
-import com.heroku.java.TokenGenerator;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -27,10 +26,8 @@ public class UserService {
     private LeaderBoardService leaderBoardService;
     @Autowired
     private MongoTemplate mongoTemplate;
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//    @Autowired
-//    private JavaMailSender javaMailSender;
+    @Autowired
+    private TokenService tokenService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -40,23 +37,36 @@ public class UserService {
         return userRepository.findUserByUserId(userId);
     }
 
+    public Optional<User> getUserByName(String username) {
+        return userRepository.findByName(username);
+    }
+
+    public User getUserData(String token) throws UnknownUserException {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
+        if(u.isPresent()) return u.get();
+        throw new UnknownUserException();
+    }
+
     public String login(String name, String password) throws InvalidTokenException{ //ADD JAVA SECURITY
         Optional<User> user = this.userRepository.findByName(name);
         if(user.isPresent() && user.get().getPassword().equals(password)) {
-            String token = TokenGenerator.generateBearerToken(user.get().getName());
+            String token = tokenService.generateToken(user.get().getName()); // Generate JWT token
             mongoTemplate.update(User.class)
                     .matching(Criteria.where("userId").is(user.get().getUserId()))
-                    .apply(new Update().set("token", token).set("tokenExpiry", Date.from(LocalDateTime.now().plusWeeks(1).atZone(ZoneId.systemDefault()).toInstant()))) //CHANGE 1 WEEK TO .ENV
+                    .apply(new Update().set("token", token))
                     .first();
             System.out.println("0");
-            return token;
+            return token; // ADD REAL TOKEN
         } else System.out.println("1");
-        throw new InvalidTokenException("Exception during token registration");
+        return "user_not_found";
     }
 
-    public User changeName(String userId, String newName) {
-        User uNew = new User(this.userRepository.findAll().size());
-        Optional<User> u = this.getSingleUser(userId);
+    public User changeName(String token, String newName) {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
         u.ifPresent((res) -> {
             u.get().setName(newName);
 
@@ -65,20 +75,15 @@ public class UserService {
                     .apply(new Update().set("name", u.get().getName()))
                     .first();
 
-            uNew.setUserId(u.get().getUserId());
-            uNew.setName(u.get().getName());
             //rerender new leaderboard
         });
-
-        if (!u.isPresent()) {
-            uNew.setName("");
-        }
-        return uNew;
+        return u.get();
     }
 
-    public User changeHighStreak(String userId) {
-        User uNew = new User(this.userRepository.findAll().size());
-        Optional<User> u = this.getSingleUser(userId);
+    public User changeHighStreak(String token) {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
         u.ifPresent((res) -> {
             u.get().setHighStreak(u.get().getHighStreak()+1);
 
@@ -87,38 +92,27 @@ public class UserService {
                     .apply(new Update().set("highStreak", u.get().getHighStreak()))
                     .first();
 
-            uNew.setUserId(u.get().getUserId());
-            uNew.setHighStreak(u.get().getHighStreak());
         });
-
-        if (!u.isPresent()) {
-            uNew.setHighStreak(-1);
-        }
-        return uNew;
+        return u.get();
     }
 
-    public User changeCurrentStreak(String userId, int newStreak) {
-        User uNew = new User(this.userRepository.findAll().size());
-        Optional<User> u = this.getSingleUser(userId);
+    public User changeCurrentStreak(String token, int newStreak) {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
         u.ifPresent((res) -> {
             mongoTemplate.update(User.class)
                     .matching(Criteria.where("userId").is(u.get().getUserId()))
                     .apply(new Update().set("currentStreak", newStreak))
                     .first();
-
-            uNew.setUserId(u.get().getUserId());
-            uNew.setHighStreak(u.get().getCurrentStreak());
         });
-
-        if (!u.isPresent()) {
-            uNew.setCurrentStreak(-1);
-        }
-        return uNew;
+        return u.get();
     }
 
-    public User changeAccuracy(String userId, int newAcc) {
-        User uNew = new User(this.userRepository.findAll().size());
-        Optional<User> u = this.getSingleUser(userId);
+    public User changeAccuracy(String token, int newAcc) {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
         u.ifPresent((res) -> {
             u.get().setAccuracy(newAcc);
 
@@ -126,14 +120,8 @@ public class UserService {
                     .matching(Criteria.where("userId").is(u.get().getUserId()))
                     .apply(new Update().set("accuracy", u.get().getAccuracy()))
                     .first();
-
-            uNew.setUserId(u.get().getUserId());
-            uNew.setAccuracy(u.get().getAccuracy());
         });
-
-        if (!u.isPresent()) uNew.setAccuracy(-1);
-
-        return uNew;
+        return u.get();
     }
 
     public User add(String name, String password, String email) {
@@ -143,18 +131,22 @@ public class UserService {
         return u;
     }
 
-    public int delete(String userId) {
-        Optional<User> u = this.getSingleUser(userId);
+    public int delete(String token) {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
 
         if (u.isPresent()) {
-            mongoTemplate.remove(Query.query(Criteria.where("userId").is(userId)), User.class);
+            mongoTemplate.remove(Query.query(Criteria.where("userId").is(u.get().getUserId())), User.class);
             //rerender new leaderboard
             return 0;
         } else return 1;
     }
 
-    public void makeGuess(String userId, String city, String guess) throws InvalidGuessException {
-        Optional<User> u = getSingleUser(userId);
+    public void makeGuess(String token, String city, String guess) throws InvalidGuessException {
+        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        String username = claims.getSubject();
+        Optional<User> u = this.getUserByName(username);
         if(u.isPresent()) {
             List<String> guesses = u.get().getGuess();
             for (int i = 0; i < guesses.size(); i++) {
@@ -164,13 +156,28 @@ public class UserService {
                 }
             }
             guesses.add(new String(city+";"+guess));
-            System.out.println(userId+city+guess);
             mongoTemplate.update(User.class)
-                    .matching(Criteria.where("userId").is(userId))
+                    .matching(Criteria.where("userId").is(u.get().getUserId()))
                     .apply(new Update().set("guess", guesses))
                     .first();
 
         } else throw new InvalidGuessException();
+    }
+
+    public int uniqueUsername(String username) {
+        List<User> u = getAllUsers();
+        for(User user : u) {
+            if(user.getName().equals(username)) return 1;
+        }
+        return 0;
+    }
+
+    public int uniqueEmail(String email) {
+        List<User> u = getAllUsers();
+        for(User user : u) {
+            if(user.getEmail().equals(email)) return 1;
+        }
+        return 0;
     }
 
 //ADD HANDLERS TO AVOID DUPLICATE NAMES / EMAILS

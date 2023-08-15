@@ -1,0 +1,61 @@
+import React, {useEffect, useState, useRef} from 'react';
+import axios from 'axios';
+import Scale from "../components/accuracy/scale/scale";
+import Digit from "../components/accuracy/digit/digit";
+import Slider from "../components/accuracy/slider/slider";
+import DifficultyBtns from "../components/accuracy/difficultyBtns/difficultyBtns";
+
+interface user {
+    name: string;
+    location: string;
+    accuracy: number;
+    registration: Date;
+    rating : number;
+    currentStreak: number;
+    highStreak: number;
+    email: string;
+    userId: string;
+    guess: string[];
+}
+
+const Home: React.FC = () => {
+    const [difficulty, setDifficulty] = useState<string>("easy");
+    const [accuracy, setAccuracy] = useState<number>(0);
+    const handleDifficultyChange = (newDifficulty: string) => {
+        setDifficulty(newDifficulty);
+    };
+    useEffect(() => {
+        if(localStorage.getItem("token")) {
+            getUserData(JSON.parse(localStorage.getItem("token") as string));
+        } else getUserData("");
+
+    }, []);
+
+
+    const getUserData = async (token : string) => {
+        try {
+            console.log(`Bearer ${token}`)
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+            const response = await axios.get<user>(`http://localhost:5000/api/user/getData`,{headers});
+            console.log(response);
+            setAccuracy(response.data.accuracy);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <h1>WeatherGuesser</h1>
+            <Scale accuracy={Math.PI + (Math.PI * accuracy/100)} />
+            <Digit accuracy={accuracy} />
+            <Slider difficulty={difficulty}/>
+            <p>Current difficulty: {difficulty}</p>
+            <DifficultyBtns onChangeDifficulty={handleDifficultyChange} />
+        </div>
+    );
+};
+
+export default Home;
