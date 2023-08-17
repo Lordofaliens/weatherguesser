@@ -17,7 +17,7 @@ public class TokenController {
 
     @GetMapping("/generateToken")
     public String generateToken() {
-        String token = tokenService.generateToken("username");
+        String token = tokenService.generateToken("userId");
         return token;
     }
 }

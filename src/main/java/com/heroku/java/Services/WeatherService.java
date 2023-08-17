@@ -34,7 +34,7 @@ public class WeatherService {
         if(condition.contains("Cloudy")||condition.contains("cloudy")) return "Cloudy";
         if(condition.contains("Humid")||condition.contains("humid")||condition.contains("Cast")||condition.contains("cast")) return "Humid";
         if(condition.contains("Rain")||condition.contains("rain")) return "Rainy";
-        if(condition.contains("Thunder")||condition.contains("thunder")) return "thunder";
+        if(condition.contains("Thunder")||condition.contains("thunder")) return "Thunder";
         if(condition.contains("Snow")||condition.contains("snow")) return "Snowy";
         return "Unknown";
     }
@@ -98,7 +98,6 @@ public class WeatherService {
                 ans.add(w);
             }
         }
-        System.out.println(ans);
         return ans;
     }
 
@@ -110,3 +109,6 @@ public class WeatherService {
         return weatherList.get(randomIdx).getLocation();
     }
 }
+
+
+//TODO: daily challenge to display on frontend (title/city/highStreak)

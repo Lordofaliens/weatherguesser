@@ -3,6 +3,7 @@ import axios from 'axios';
 
 interface SliderProps {
     difficulty: string;
+    onChangeCity: (city: string) => void;
 }
 
 interface city {
@@ -14,23 +15,27 @@ interface city {
     difficulty: string;
 }
 
-const Slider: React.FC<SliderProps> = ({ difficulty }) => {
+//CHANGE GUESS OPTION TO DISPLAY ANOTHER COLOR IF USER HAS ONE
+const Slider: React.FC<SliderProps> = ({ difficulty, onChangeCity }) => {
     // Your component code here
     const [listOfCities, setListOfCities] = useState<string[]>([]);
     const [currentCity, setCurrentCity] = useState<string>('New York');
     const sliderRef = useRef<HTMLDivElement | null>(null);
     const [cityIdx, setCityIdx] = useState<number>(0);
 
+    const handleCityChange = (city: string) => {
+        onChangeCity(city);
+        setCurrentCity(city);
+    };
+
     useEffect(() => {
-        if(difficulty=="easy") setCurrentCity("New York")
-        else if(difficulty=="medium") setCurrentCity("Paris")
-        else setCurrentCity("Tokyo");
+        if(difficulty=="easy") handleCityChange("New York")
+        else if(difficulty=="medium") handleCityChange("Paris")
+        else handleCityChange("Tokyo");
         setCityIdx(0);
         fetchData(difficulty);
     }, [difficulty]);
-    useEffect(() => {
-        console.log('Difficulty prop changed:', difficulty);
-    }, [difficulty]);
+
     const fetchData = async (difficulty : string) => {
         try {
             const response = await axios.get<city[]>(
@@ -39,7 +44,6 @@ const Slider: React.FC<SliderProps> = ({ difficulty }) => {
                     params: { difficulty },
                 }
             );
-            console.log(response.data)
             setListOfCities(response.data.map(d => d.location));
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -47,12 +51,12 @@ const Slider: React.FC<SliderProps> = ({ difficulty }) => {
     };
     const previousCityHandler = () => {
         if(cityIdx==0) return;
-        setCurrentCity(listOfCities[cityIdx-1]);
+        handleCityChange(listOfCities[cityIdx-1]);
         setCityIdx(cityIdx-1);
     }
     const nextCityHandler = () => {
         if(cityIdx==listOfCities.length-1) return;
-        setCurrentCity(listOfCities[cityIdx+1]);
+        handleCityChange(listOfCities[cityIdx+1]);
         setCityIdx(cityIdx+1);
     }
     return (

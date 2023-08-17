@@ -42,13 +42,13 @@ public class LeaderBoardService {
         return topUsersIds;
     }
 
-    public List<String> getListOfNamesFromIds() {
+    public List<User> getListOfUsersFromIds() {
         List<String> ids = sortNewLeaderBoard();
-        List<String> ans = new ArrayList<>();
+        List<User> ans = new ArrayList<>();
         for(String id : ids) {
             Optional<User> u = userRepository.findUserByUserId(id);
             if(u.isPresent()) {
-                ans.add(u.get().getName());
+                ans.add(u.get());
             }
         }
         return ans;

@@ -48,7 +48,7 @@ public class UserController {
         return new ResponseEntity<>(this.userService.login(data.get("name"),data.get("password")), HttpStatus.OK);
     }
 
-    @GetMapping("/changeName")
+    @PostMapping("/changeName")
     public ResponseEntity<User> changeName(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String,String> data) throws UnknownUserException {
         String token = authorizationHeader.replace("Bearer ", "");
         User updatedUser = userService.changeName(token, data.get("name"));
@@ -56,7 +56,23 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/changeHighStreak")
+    @PostMapping("/changePassword")
+    public ResponseEntity<User> changePassword(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String,String> data) throws UnknownUserException {
+        String token = authorizationHeader.replace("Bearer ", "");
+        User updatedUser = userService.changePassword(token, data.get("password"));
+        if(updatedUser.getName()=="") throw new UnknownUserException();
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/changeEmail")
+    public ResponseEntity<User> changeEmail(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String,String> data) throws UnknownUserException {
+        String token = authorizationHeader.replace("Bearer ", "");
+        User updatedUser = userService.changeEmail(token, data.get("email"));
+        if(updatedUser.getName()=="") throw new UnknownUserException();
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/changeHighStreak")
     public ResponseEntity<User> changeHighStreak(@RequestHeader("Authorization") String authorizationHeader) throws UnknownUserException {
         String token = authorizationHeader.replace("Bearer ", "");
         User updatedUser = userService.changeHighStreak(token);
@@ -64,7 +80,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/changeCurrentStreak")
+    @PostMapping("/changeCurrentStreak")
     public ResponseEntity<User> changeCurrentStreak(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String,String> data) throws UnknownUserException {
         String token = authorizationHeader.replace("Bearer ", "");
         User updatedUser = userService.changeCurrentStreak(token, Integer.parseInt(data.get("currentStreak")));
@@ -72,7 +88,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/changeAccuracy")
+    @PostMapping("/changeAccuracy")
     public ResponseEntity<User> changeAccuracy(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String,String> data) throws UnknownUserException {
         String token = authorizationHeader.replace("Bearer ", "");
         User updatedUser = userService.changeAccuracy(token, Integer.parseInt(data.get("accuracy")));
@@ -81,12 +97,12 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> add(@RequestBody Map<String, String> data) throws UnknownUserException {
-        User createdUser = userService.add(data.get("name"), data.get("password"), data.get("email"));
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<String> add(@RequestBody Map<String, String> data) throws UnknownUserException {
+        String createdToken = userService.add(data.get("name"), data.get("password"), data.get("email"));
+        return ResponseEntity.ok(createdToken);
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<Integer> delete(@RequestHeader("Authorization") String authorizationHeader) throws UnknownUserException {
         String token = authorizationHeader.replace("Bearer ", "");
         int deletedUser = userService.delete(token);
@@ -94,11 +110,10 @@ public class UserController {
         return ResponseEntity.ok(0);
     }
 
-    @GetMapping("/makeGuess")
-    public ResponseEntity<Integer> makeGuess(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String, String> data) throws InvalidGuessException {
+    @PostMapping("/makeGuess")
+    public ResponseEntity<List<String>> makeGuess(@RequestHeader("Authorization") String authorizationHeader, @RequestBody Map<String, String> requestBody) throws InvalidGuessException {
         String token = authorizationHeader.replace("Bearer ", "");
-        userService.makeGuess(token, data.get("city"), data.get("guess"));
-        return ResponseEntity.ok(0);
+        return new ResponseEntity<>(userService.makeGuess(token, requestBody.get("city"), requestBody.get("guess")), HttpStatus.OK);
     }
 
     @GetMapping("/uniqueUsername")

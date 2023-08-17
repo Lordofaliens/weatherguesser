@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import {Link, useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,6 +14,8 @@ const userData: LoginData = {
 };
 
 const Login: React.FC = () => {
+    const navigate = useNavigate();
+    if(localStorage.getItem("token")) navigate("../account");
     const usernameElem = document.getElementById('usernameInput') as HTMLInputElement;
     const passwordElem = document.getElementById('passwordInput') as HTMLInputElement;
     const [userData, setUserData] = useState<LoginData>({
@@ -61,9 +64,9 @@ const Login: React.FC = () => {
             <input type={"text"} placeholder={"Type your username"} id="usernameInput" onChange={(e) => setUserData({ ...userData, name: e.target.value })}/>
             <p>Password</p>
             <input type={"password"} placeholder={"Type your password"} id="passwordInput" onChange={(e) => setUserData({ ...userData, password: e.target.value })}/>
-            <a href={"."}>Forgot password?</a>
+            <Link to={"."}>Forgot password?</Link>
             <button onClick={()=>handleLogin()}>Login</button>
-            <a href={"../register"}>Or sign up?</a>
+            <Link to={"../register"}>Or sign up?</Link>
             <ToastContainer />
         </div>
     );

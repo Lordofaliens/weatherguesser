@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 const Logout: React.FC = () => {
+    const navigate = useNavigate();
     function logoutEffect() {
         localStorage.removeItem("token");
-        window.location.href = "../home";
+        navigate("../home");
     }
     logoutEffect();
     return (<div></div>);
