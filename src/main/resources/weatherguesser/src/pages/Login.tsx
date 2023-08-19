@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import {Link, useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,16 +8,10 @@ interface LoginData {
     name: string;
     password: string;
 }
-const userData: LoginData = {
-    name: 'yourUsername',
-    password: 'yourPassword'
-};
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
     if(localStorage.getItem("token")) navigate("../account");
-    const usernameElem = document.getElementById('usernameInput') as HTMLInputElement;
-    const passwordElem = document.getElementById('passwordInput') as HTMLInputElement;
     const [userData, setUserData] = useState<LoginData>({
         name: '',
         password: ''
@@ -48,7 +42,7 @@ const Login: React.FC = () => {
                     autoClose: 3000,
                     role: "alert"
                 });
-                setTimeout(()=>{window.location.href = "../home";},3000);
+                setTimeout(()=>{window.location.href = "../account";},3000);
             }
             // Do something with the successful response
         } catch (error) {

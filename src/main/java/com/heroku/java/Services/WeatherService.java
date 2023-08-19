@@ -28,6 +28,10 @@ public class WeatherService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    public List<Weather> getAllWeather() {
+        return this.weatherRepository.findAll();
+    }
+
     public String convertCondition(String condition){
         if(condition.contains("Clear")||condition.contains("clear")) return "Clear";
         if(condition.contains("Sunny")||condition.contains("sunny")||condition.contains("Hot")||condition.contains("hot")) return "Sunny";
@@ -56,8 +60,6 @@ public class WeatherService {
 
             int Temperature = jsonNode.get("current").get("temp_c").asInt();
             String Condition = jsonNode.get("current").get("condition").get("text").asText();
-            System.out.println(Temperature);
-            System.out.println(Condition);
             client.close();
             Optional<Weather> weatherToChange = weatherRepository.findWeatherByLatitude(lat);
 
@@ -100,15 +102,4 @@ public class WeatherService {
         }
         return ans;
     }
-
-    public String getDailyWeather() {
-        List<Weather> weatherList = weatherRepository.findAll();
-        int num = weatherList.size();
-        Random random = new Random();
-        int randomIdx = random.nextInt(num);
-        return weatherList.get(randomIdx).getLocation();
-    }
 }
-
-
-//TODO: daily challenge to display on frontend (title/city/highStreak)

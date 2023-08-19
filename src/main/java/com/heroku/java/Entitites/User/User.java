@@ -30,6 +30,7 @@ public class User {
     private String location;
     private int accuracy;
     private int totalGuesses;
+    private int successfulGuesses;
     private int highStreak;
     private int currentStreak;
     private int rating;
@@ -81,6 +82,11 @@ public class User {
         this.totalGuesses = totalGuesses;
     }
 
+    public int getSuccessfulGuesses() { return this.successfulGuesses; }
+    public void setSuccessfulGuesses(int successfulGuesses) {
+        this.successfulGuesses = successfulGuesses;
+    }
+
     public int getHighStreak() { return this.highStreak; }
     public void setHighStreak(int highStreak) {
         this.highStreak = highStreak;
@@ -123,6 +129,7 @@ public class User {
         this.location = generateLocation();
         this.accuracy = 0;
         this.totalGuesses = 0;
+        this.successfulGuesses = 0;
         this.highStreak = 0;
         this.currentStreak = 0;
         this.rating = 0;
@@ -139,6 +146,7 @@ public class User {
         this.location = generateLocation();
         this.accuracy = 0;
         this.totalGuesses = 0;
+        this.successfulGuesses = 0;
         this.highStreak = 0;
         this.currentStreak = 0;
         this.rating = userDBLength+1;

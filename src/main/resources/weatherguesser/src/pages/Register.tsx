@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,17 +10,10 @@ interface RegisterData {
     email: string;
     password: string;
 }
-const userData: RegisterData = {
-    name: 'yourUsername',
-    email: 'yourEmail',
-    password: 'yourPassword'
-};
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
     if(localStorage.getItem("token")) navigate("../account");
-    const usernameElem = document.getElementById('usernameInput') as HTMLInputElement;
-    const passwordElem = document.getElementById('passwordInput') as HTMLInputElement;
     const uniquenessHandlerInstance = new UniquenessHandler();
     const [userData, setUserData] = useState<RegisterData>({
         name: '',
@@ -68,14 +61,14 @@ const Register: React.FC = () => {
             } else {
                 console.log('Register successful:', response.data);
                 toast.dismiss();
-                toast.success("User created! You will be redirected to home page!", {
+                toast.success("User created! You will be redirected to your account!", {
                     position: toast.POSITION.TOP_CENTER,
                     draggablePercent: 50,
                     autoClose: 3000,
                     role: "alert"
                 });
-                localStorage.setItem("token",response.data);
-                setTimeout(()=>{window.location.href = "../home";},3000);
+                localStorage.setItem("token",JSON.stringify(response.data));
+                setTimeout(()=>{window.location.href = "../account";},3000);
             }
             // Do something with the successful response
         } catch (error) {

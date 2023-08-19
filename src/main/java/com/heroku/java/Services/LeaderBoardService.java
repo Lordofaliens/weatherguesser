@@ -5,6 +5,7 @@ import com.heroku.java.Entitites.User.User;
 import com.heroku.java.Entitites.Weather.Weather;
 import com.heroku.java.Repositories.LeaderBoardRepository;
 import com.heroku.java.Repositories.UserRepository;
+import com.heroku.java.Repositories.WeatherRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,12 +24,20 @@ public class LeaderBoardService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private WeatherRepository weatherRepository;
+    @Autowired
     private MongoTemplate mongoTemplate;
 
     public List<String> sortNewLeaderBoard() {
         List<User> userList = userRepository.findAll();
-        Collections.sort(userList, Comparator.comparingInt(User::getRating));
-
+        Collections.sort(userList, Comparator.comparingInt(User::getHighStreak).reversed());
+        for(int i = 0; i < userList.size(); i++) {
+            userList.get(i).setRating(i+1);
+            mongoTemplate.update(User.class)
+                    .matching(Criteria.where("userId").is(userList.get(i).getUserId()))
+                    .apply(new Update().set("rating", userList.get(i).getRating()))
+                    .first();
+        }
         List<String> topUsersIds = userList.stream()
                 .limit(100)
                 .map(User::getUserId)
@@ -52,5 +61,25 @@ public class LeaderBoardService {
             }
         }
         return ans;
+    }
+
+    public String[] getDailyWeather() {
+        LeaderBoard lb = leaderBoardRepository.findLeaderBoardByLeaderBoardId(0).get();
+        String[] res = new String[] {lb.getDailyChallengeCity(), lb.getDailyChallengeDifficulty()};
+        return res;
+    }
+
+    public String[] updateDailyWeather() {
+        List<Weather> weatherList = weatherRepository.findAll();
+        int num = weatherList.size();
+        Random random = new Random();
+        int randomIdx = random.nextInt(num);
+        String city = weatherList.get(randomIdx).getLocation();
+        String difficulty = weatherList.get(randomIdx).getDifficulty();
+        mongoTemplate.update(LeaderBoard.class)
+                .matching(Criteria.where("leaderBoardId").is(0))
+                .apply(new Update().set("dailyChallengeCity", city).set("dailyChallengeDifficulty", difficulty))
+                .first();
+        return new String[] {city, difficulty};
     }
 }

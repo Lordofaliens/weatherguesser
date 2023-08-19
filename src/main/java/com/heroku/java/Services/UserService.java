@@ -1,5 +1,6 @@
 package com.heroku.java.Services;
 
+import com.heroku.java.Entitites.Weather.Weather;
 import com.heroku.java.Exceptions.InvalidGuessException;
 import com.heroku.java.Exceptions.InvalidTokenException;
 import com.heroku.java.Exceptions.UnknownUserException;
@@ -58,7 +59,6 @@ public class UserService {
                     .matching(Criteria.where("userId").is(user.get().getUserId()))
                     .apply(new Update().set("token", token))
                     .first();
-            System.out.println(token);
             return token;
         } else System.out.println("1");
         return "user_not_found";
@@ -226,8 +226,41 @@ public class UserService {
         return 0;
     }
 
-//ADD HANDLERS TO AVOID DUPLICATE NAMES / EMAILS
-
+    public void updateUsers(List<User> users, List<Weather> weathers) {
+        for (User u : users) {
+            List<String> guesses = u.getGuess();
+            for(String guess : guesses) {
+                String[] gArr = guess.split(";");
+                boolean isDaily = this.leaderBoardService.getDailyWeather()[0].equals(gArr[0]);
+                for (Weather weather : weathers) {
+                    if (weather.getLocation().equals(gArr[0])) {
+                        if(weather.getCondition().equals(gArr[1])) {
+                            u.setSuccessfulGuesses(u.getSuccessfulGuesses()+1);
+                            if(isDaily) u.setCurrentStreak(u.getCurrentStreak()+1);
+                        } else {
+                            if(isDaily) u.setCurrentStreak(0);
+                        }
+                        u.setTotalGuesses(u.getTotalGuesses()+1);
+                        break;
+                    }
+                }
+            }
+            if(u.getHighStreak()<u.getCurrentStreak()) u.setHighStreak(u.getCurrentStreak());
+            u.setAccuracy(u.getTotalGuesses()==0?0:100*u.getSuccessfulGuesses()/u.getTotalGuesses());
+            u.setGuess(new ArrayList<>());
+            mongoTemplate.update(User.class)
+                    .matching(Criteria.where("userId").is(u.getUserId()))
+                    .apply(new Update()
+                            .set("currentStreak", u.getCurrentStreak())
+                            .set("highStreak", u.getHighStreak())
+                            .set("totalGuesses", u.getTotalGuesses())
+                            .set("successfulGuesses", u.getSuccessfulGuesses())
+                            .set("accuracy", u.getAccuracy())
+                            .set("guess", u.getGuess())
+                    )
+                    .first();
+        }
+    }
 
 //    public void requestPasswordReset(String email) throws tokenException {
 //        Optional<User> user = userRepository.findByEmail(email);
@@ -282,3 +315,6 @@ public class UserService {
 //        javaMailSender.send(message);
 //    }
 }
+
+
+//TODO: when change name,also change leaderboard

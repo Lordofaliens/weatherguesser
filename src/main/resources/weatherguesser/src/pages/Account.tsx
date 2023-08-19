@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {getUserData} from "../controllers/getters/userDataGetter";
 import {setUserName} from "../controllers/setters/userNameSetter";

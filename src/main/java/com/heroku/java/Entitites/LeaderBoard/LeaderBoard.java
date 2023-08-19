@@ -15,8 +15,9 @@ public class LeaderBoard {
     @Id
     private ObjectId id;
     private int leaderBoardId;
-
     private List<String> users;
+    private String dailyChallengeCity;
+    private String dailyChallengeDifficulty;
 
     public int getLeaderBoardId() {
         return this.leaderBoardId;
@@ -24,11 +25,23 @@ public class LeaderBoard {
     public void setLeaderBoardId(int leaderBoardId) {
         this.leaderBoardId = leaderBoardId;
     }
-    private List<String> getUsers() {
+    public List<String> getUsers() {
         return this.users;
     }
-    private void setUsers(List<String> users) {
+    public void setUsers(List<String> users) {
         this.users = users;
+    }
+    public String getDailyChallengeCity() {
+        return this.dailyChallengeCity;
+    }
+    public void setDailyChallengeCity(String dailyChallengeCity) {
+        this.dailyChallengeCity = dailyChallengeCity;
+    }
+    public String getDailyChallengeDifficulty() {
+        return this.dailyChallengeDifficulty;
+    }
+    public void setDailyChallengeDifficulty(String dailyChallengeDifficulty) {
+        this.dailyChallengeDifficulty = dailyChallengeDifficulty;
     }
 
     public LeaderBoard() {

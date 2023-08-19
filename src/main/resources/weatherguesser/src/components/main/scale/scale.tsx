@@ -54,7 +54,7 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
         return () => {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [accuracy]); // Include 'accuracy' in the dependency array
+    }, [accuracy]); // Include 'main' in the dependency array
 
     return <canvas ref={canvasRef} width={430} height={235} />;
 }

@@ -17,3 +17,6 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
+//TODO: update page, output results of updated data at 12PM or first time user opens the app this day

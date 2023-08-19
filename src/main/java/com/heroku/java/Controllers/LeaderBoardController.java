@@ -27,4 +27,14 @@ public class LeaderBoardController {
     public ResponseEntity<List<User>> getLeaderBoard() {
         return new ResponseEntity<>(this.leaderBoardService.getListOfUsersFromIds(), HttpStatus.OK);
     }
+
+    @GetMapping("/getDailyChallenge")
+    public ResponseEntity<String[]> getDailyChallenge() {
+        return new ResponseEntity<>(this.leaderBoardService.getDailyWeather(), HttpStatus.OK);
+    }
+
+    @GetMapping("/updateDailyChallenge")
+    public ResponseEntity<String[]> updateDailyChallenge() {
+        return new ResponseEntity<>(this.leaderBoardService.updateDailyWeather(), HttpStatus.OK);
+    }
 }
