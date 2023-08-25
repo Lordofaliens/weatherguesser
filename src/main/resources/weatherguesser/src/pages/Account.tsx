@@ -95,42 +95,71 @@ const Account: React.FC = () => {
     const fieldStateMapping = [Name, Password, Email];
     const successGuess = totalGuesses * accuracy / 100; //change to variables
     return (
-        <div>
+        <div className="gradient-bg w-screen h-screen bg-gradient-to-r from-pink-300 via-pink-200 to-blue-200 animate-gradient flex flex-col items-center justify-center">
             {localStorage.getItem("token")==null ?
-                (<div>
+                (<div className="bg-white rounded-lg justify-between flex m-4">
                     <Link to={"../login"}>Login</Link>
                     <Link to={"../register"}>Register</Link>
                 </div>)
                 :
-                (<div>
+                (<div className="bg-white rounded-lg w-account min-w-account max-h-account p-5 m-4">
+                    <p className="gradient-bg font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0 text-center">YOUR DATA</p>
                     {fields.map((field: string) => (
-                        <div key={uuidv4()}>
-                            <p>{field}</p>
-                            {editState[fields.indexOf(field)] ? <input id={`account${field}Input`} placeholder={fieldStateMapping[fields.indexOf(field)]} /> : <p>{ field==="Password"&&!showPassword ? "*******" : fieldStateMapping[fields.indexOf(field)]}</p>}
-                            {field==="Password"&&!editState[fields.indexOf(field)] && (<button onClick={()=>handleShowPassword()}>{!showPassword?"Open":"Close"}</button>) }
-                            <button onClick={()=>handleChangeEdit(`${field}`)}>{editState[fields.indexOf(field)]?<span>Apply</span>:<span>Edit</span>}</button>
+                        <div key={uuidv4()} className="justify-between flex text-gray-300 items-center">
+                            <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">
+                                {field}
+                            </span>
+                            <div>
+                                {editState[fields.indexOf(field)] ?
+                                    <input className="bg-gradient-to-r from-pink-300 via-pink-200 to-blue-200 focus:outline-none focus:ring focus:border-blue-300 placeholder-white m-1 mr-3 text-white rounded-lg" id={`account${field}Input`} placeholder={fieldStateMapping[fields.indexOf(field)]} />
+                                    :
+                                    <span className="text-gray-300 mr-3">{ field==="Password"&&!showPassword ? "*******" : fieldStateMapping[fields.indexOf(field)]}</span>
+                                }
+                                {field==="Password"&&!editState[fields.indexOf(field)] && (
+                                    <button className="text-gray-300 mr-3" onClick={()=>handleShowPassword()}>
+                                        {!showPassword?"O":"C"}
+                                    </button>)
+                                }
+                                <button  onClick={()=>handleChangeEdit(`${field}`)}>
+                                    {editState[fields.indexOf(field)]?
+                                        <span className="text-yellow-300">Apply</span>
+                                        :
+                                        <span className="text-yellow-300">Edit</span>
+                                    }
+                                </button>
+                            </div>
                         </div>
                     ))}
-                    <Link to={"../logout"}>Logout</Link>
+                    <Link to={"../logout"} className="text-red-500">Logout</Link>
                 </div>)
             }
-            <div>
-                <p>Your stats</p>
-                <p>Rating</p>
-                {rating}
-                <p>HighStreak</p>
-                {highStreak}
-                <p>CurrentStreak</p>
-                {currentStreak}
-                <p>Accuracy</p>
-                {accuracy} %
-                <p>Total Guesses</p>
-                {totalGuesses}
-                <p>Successful Guesses</p>
-                {successGuess}
+            <div className="w-account min-w-account max-h-account bg-white rounded-lg justify-between p-5">
+                <p className="gradient-bg font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0 text-center">YOUR STATS</p>
+                <div className="justify-between flex">
+                    <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">Rating</span>
+                    <span className="text-gray-200">{rating}</span>
+                </div>
+                <div className="justify-between flex">
+                    <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">HighStreak</span>
+                    <span className="text-gray-200">{highStreak}</span>
+                </div>
+                <div className="justify-between flex">
+                    <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">CurrentStreak</span>
+                    <span className="text-gray-200">{currentStreak}</span>
+                </div>
+                <div className="justify-between flex">
+                    <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">Accuracy</span>
+                    <span className="text-gray-200">{accuracy} %</span>
+                </div>
+                <div className="justify-between flex">
+                    <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">Total Guesses</span>
+                    <span className="text-gray-200">{totalGuesses}</span>
+                </div>
+                <div className="justify-between flex">
+                    <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">Correct Guesses</span>
+                    <span className="text-gray-200">{successGuess}</span>
+                </div>
             </div>
-
-            <Link to={"../home"}>Home</Link>
             <ToastContainer />
         </div>
     );

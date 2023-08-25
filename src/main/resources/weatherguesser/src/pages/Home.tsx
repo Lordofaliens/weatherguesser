@@ -127,34 +127,64 @@ const Home: React.FC = () => {
                 backgroundImage: photoUrl ? `url(${photoUrl})` : "",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                transition: "background-image 0.5s ease"
+                transition: "background-image 0.5s ease",
+                zIndex: "1"
             }}
         >
-            <h1>WeatherGuesser</h1>
-            <DailyChallenge
-                currentStreak={currentStreak}
-                city={dailyChallenge[0]}
-                difficulty={dailyChallenge[1]}
-                onChangeDifficulty={async () =>
-                    await handleDifficultyChange(dailyChallenge[1])
-                }
-                onChangeCity={async () => await handleCityChange(dailyChallenge[0])}
+            <div
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.4)", // 20% darker overlay
+                    zIndex: "0"
+                }}
             />
-            <Scale accuracy={Math.PI + (Math.PI * accuracy / 100)} />
-            <Digit accuracy={accuracy} />
-            <Slider
-                dailyCity={dailyChallenge[0]}
-                city={city}
-                difficulty={difficulty}
-                onChangeCity={handleCityChange}
-            />
-            <GuessBtns guessed={guessed} onChangeGuess={handleGuessChange} />
-            <p>Current difficulty: {difficulty}</p>
-            <DifficultyBtns
-                onChangeCity={handleCityChange}
-                onChangeDifficulty={handleDifficultyChange}
-            />
-            <LeaderBoard users={leaderBoard} />
+            <div style={{
+                zIndex: "2",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+            }}>
+                <h1>WeatherGuesser</h1>
+                <DailyChallenge
+                    currentStreak={currentStreak}
+                    city={dailyChallenge[0]}
+                    difficulty={dailyChallenge[1]}
+                    onChangeDifficulty={async () =>
+                        await handleDifficultyChange(dailyChallenge[1])
+                    }
+                    onChangeCity={async () => await handleCityChange(dailyChallenge[0])}
+                />
+                <div style={{display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "80px"
+                }}>
+                    <GuessBtns guessed={guessed} onChangeGuess={handleGuessChange} />
+                    <Scale accuracy={Math.PI + (Math.PI * accuracy / 100)} />
+                    <Digit accuracy={accuracy} />
+
+                </div>
+
+                <Slider
+                    dailyCity={dailyChallenge[0]}
+                    city={city}
+                    difficulty={difficulty}
+                    onChangeCity={handleCityChange}
+                />
+
+                <p>Current difficulty: {difficulty}</p>
+                <DifficultyBtns
+                    onChangeCity={handleCityChange}
+                    onChangeDifficulty={handleDifficultyChange}
+                />
+                <LeaderBoard users={leaderBoard} />
+            </div>
+
         </div>
     );
 };

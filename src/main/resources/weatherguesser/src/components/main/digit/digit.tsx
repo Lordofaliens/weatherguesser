@@ -8,8 +8,8 @@ interface DigitProps {
 const Digit: React.FC<DigitProps> = ({ accuracy }) => {
     const digitRef = useRef<HTMLDivElement | null>(null);
     return (
-        <div ref={digitRef}>
-            <p>{accuracy}</p>
+        <div ref={digitRef} style={{position:"absolute"}}>
+            <p style={{fontSize:"80px"}}>{accuracy}</p>
         </div>
     );
 };

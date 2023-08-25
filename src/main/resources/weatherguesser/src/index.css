@@ -1,8 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *{
   margin: 0;
   padding: 0;
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
 }
+
 body {
+  font-size: 18px;
   margin: 0;
   padding: 0;
   width: 100vw;
@@ -12,6 +20,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
 }
 
 code {
@@ -19,8 +28,63 @@ code {
     monospace;
 }
 
+.guessBtn {
+  width:40px;
+  height: 40px;
+  border-radius: 50%;
+  background-image: url("../public/guessBtn.png");
+}
+
 .selected {
-  background-color: red;
-  color: white;
-  /* Add any other styling you want */
+  transition: all 0.3s ease-in-out;
+  color: red;
+}
+
+.notSelected {
+  transition: all 0.3s ease-in-out;
+  color: green;
+}
+
+
+@keyframes fadeScale {
+  0% {
+    scale: 0;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes fadeOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-opacity {
+  animation: fadeOpacity 1s ease-in-out;
+}
+
+.animate-scale {
+  animation: fadeScale 1s ease-in-out;
+}
+
+.gradient-bg {
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
 }

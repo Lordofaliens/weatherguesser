@@ -19,7 +19,7 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        endAngle += 0.01; // Adjust the increment to control the animation speed
+        endAngle += 0.03; // Adjust the increment to control the animation speed
 
         const gradient = ctx.createLinearGradient(
             Math.cos(startAngle) * 210 + 210,
@@ -56,7 +56,7 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
         };
     }, [accuracy]); // Include 'main' in the dependency array
 
-    return <canvas ref={canvasRef} width={430} height={235} />;
+    return <canvas ref={canvasRef} width={430} height={235} style={{zIndex:"1"}}/>;
 }
 
 export default Scale;

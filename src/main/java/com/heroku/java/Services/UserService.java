@@ -315,6 +315,3 @@ public class UserService {
 //        javaMailSender.send(message);
 //    }
 }
-
-
-//TODO: when change name,also change leaderboard
