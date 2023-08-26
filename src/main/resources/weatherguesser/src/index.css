@@ -88,3 +88,8 @@ code {
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
 }
+
+.selectedAccForm {
+  background-color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}

@@ -1,9 +1,8 @@
 import React from 'react';
 import { BrowserRouter, BrowserRouterProps, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/Login';
+import Auth from './pages/Auth';
 import Logout from './pages/Logout';
-import Register from './pages/Register';
 import Account from './pages/Account';
 
 interface RouteConfig {
@@ -21,16 +20,12 @@ const routes: RouteConfig[] = [
         path: '/account'
     },
     {
-        element: <Login />,
-        path: '/login'
+        element: <Auth />,
+        path: '/auth'
     },
     {
         element: <Logout />,
         path: '/logout'
-    },
-    {
-        element: <Register />,
-        path: '/register'
     }
 ];
 

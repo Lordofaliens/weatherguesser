@@ -5,7 +5,7 @@ const Logout: React.FC = () => {
     const navigate = useNavigate();
     useEffect(() => {
         localStorage.removeItem('token');
-        navigate('../login');
+        navigate('../auth');
     }, [navigate]);
 
     return (<div></div>);

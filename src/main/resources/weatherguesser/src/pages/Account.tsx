@@ -1,4 +1,10 @@
 import React, {useEffect, useState} from 'react';
+import Box from '@mui/material/Box';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
 import { v4 as uuidv4 } from 'uuid';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,6 +13,8 @@ import {setUserName} from "../controllers/setters/userNameSetter";
 import {setUserPassword} from "../controllers/setters/userPasswordSetter";
 import {setUserEmail} from "../controllers/setters/userEmailSetter";
 import {Link} from "react-router-dom";
+import {styled} from "@mui/material";
+import AccountInput from '../components/accountInput';
 
 const Account: React.FC = () => {
     const [Name, setName] = useState<string>("");
@@ -93,25 +101,30 @@ const Account: React.FC = () => {
     const fields = ["Name", "Password", "Email"];
 
     const fieldStateMapping = [Name, Password, Email];
-    const successGuess = totalGuesses * accuracy / 100; //change to variables
+    const successGuess = totalGuesses * accuracy / 100;
+
+
+
     return (
         <div className="gradient-bg w-screen h-screen bg-gradient-to-r from-pink-300 via-pink-200 to-blue-200 animate-gradient flex flex-col items-center justify-center">
             {localStorage.getItem("token")==null ?
-                (<div className="bg-white rounded-lg justify-between flex m-4">
-                    <Link to={"../login"}>Login</Link>
-                    <Link to={"../register"}>Register</Link>
-                </div>)
+                (
+                    window.location.href="../auth"
+                )
                 :
-                (<div className="bg-white rounded-lg w-account min-w-account max-h-account p-5 m-4">
+                (<div className="bg-white rounded-lg w-account min-w-account max-h-account p-5 m-4 shadow-md">
                     <p className="gradient-bg font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0 text-center">YOUR DATA</p>
                     {fields.map((field: string) => (
-                        <div key={uuidv4()} className="justify-between flex text-gray-300 items-center">
+                        <div key={uuidv4()} className="justify-between flex text-gray-300 items-center m-3">
                             <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">
                                 {field}
                             </span>
-                            <div>
+                            <div className="flex">
                                 {editState[fields.indexOf(field)] ?
-                                    <input className="bg-gradient-to-r from-pink-300 via-pink-200 to-blue-200 focus:outline-none focus:ring focus:border-blue-300 placeholder-white m-1 mr-3 text-white rounded-lg" id={`account${field}Input`} placeholder={fieldStateMapping[fields.indexOf(field)]} />
+                                    <AccountInput>
+                                        <TextField  placeholder={`type new ${field.toLowerCase()}`} label={fieldStateMapping[fields.indexOf(field)]} id={`account${field}Input`} InputProps={{ disableUnderline: true }} />
+                                    </AccountInput>
+                                    // <input className="bg-gradient-to-r from-pink-300 via-pink-200 to-blue-200 focus:outline-none focus:ring focus:border-blue-300 placeholder-white m-1 mr-3 text-white rounded-lg" id={`account${field}Input`} placeholder={fieldStateMapping[fields.indexOf(field)]} />
                                     :
                                     <span className="text-gray-300 mr-3">{ field==="Password"&&!showPassword ? "*******" : fieldStateMapping[fields.indexOf(field)]}</span>
                                 }
@@ -120,9 +133,9 @@ const Account: React.FC = () => {
                                         {!showPassword?"O":"C"}
                                     </button>)
                                 }
-                                <button  onClick={()=>handleChangeEdit(`${field}`)}>
+                                <button  onClick={()=>handleChangeEdit(`${field}`)} className="pl-4">
                                     {editState[fields.indexOf(field)]?
-                                        <span className="text-yellow-300">Apply</span>
+                                        <span className="text-green-300">Apply</span>
                                         :
                                         <span className="text-yellow-300">Edit</span>
                                     }
@@ -130,10 +143,13 @@ const Account: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                    <Link to={"../logout"} className="text-red-500">Logout</Link>
+                        <div key={uuidv4()} className="justify-end flex text-gray-300 items-center m-3">
+                            <Link to={"../logout"} className="text-red-500 text-end">Logout</Link>
+                        </div>
+
                 </div>)
             }
-            <div className="w-account min-w-account max-h-account bg-white rounded-lg justify-between p-5">
+            {localStorage.getItem("token")!=null && (<div className="w-account min-w-account max-h-account bg-white rounded-lg justify-between p-5 shadow-md">
                 <p className="gradient-bg font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0 text-center">YOUR STATS</p>
                 <div className="justify-between flex">
                     <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">Rating</span>
@@ -159,7 +175,7 @@ const Account: React.FC = () => {
                     <span className="gradient-bg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-blue-200 to-pink-200 inset-0">Correct Guesses</span>
                     <span className="text-gray-200">{successGuess}</span>
                 </div>
-            </div>
+            </div>)}
             <ToastContainer />
         </div>
     );
