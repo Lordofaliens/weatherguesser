@@ -1,0 +1,45 @@
+import user from "./IUser";
+import {Dispatch, SetStateAction} from "react";
+
+export default interface IHomeContextType {
+    leaderBoard: user[];
+    setLeaderBoard: Dispatch<SetStateAction<user[]>>;
+    dailyChallenge: string[];
+    setDailyChallenge: Dispatch<SetStateAction<string[]>>;
+    difficulty: string;
+    setDifficulty: Dispatch<SetStateAction<string>>;
+    guess: string;
+    setGuess: Dispatch<SetStateAction<string>>;
+    guessed: string;
+    setGuessed: Dispatch<SetStateAction<string>>;
+    guesses: string[];
+    setGuesses: Dispatch<SetStateAction<string[]>>;
+    name: string;
+    setName: Dispatch<SetStateAction<string>>;
+    password: string;
+    setPassword: Dispatch<SetStateAction<string>>;
+    email: string;
+    setEmail: Dispatch<SetStateAction<string>>;
+    rating: number;
+    setRating: Dispatch<SetStateAction<number>>;
+    accuracy: number;
+    setAccuracy: Dispatch<SetStateAction<number>>;
+    highStreak: number;
+    setHighStreak: Dispatch<SetStateAction<number>>;
+    currentStreak: number;
+    setCurrentStreak: Dispatch<SetStateAction<number>>;
+    totalGuesses: number;
+    setTotalGuesses: Dispatch<SetStateAction<number>>;
+    city: string;
+    setCity: Dispatch<SetStateAction<string>>;
+    backgroundColor: string;
+    setBackgroundColor: Dispatch<SetStateAction<string>>;
+    opacityBlack: number;
+    setOpacityBlack: Dispatch<SetStateAction<number>>;
+    opacityColor: number;
+    setOpacityColor: Dispatch<SetStateAction<number>>;
+    showLeaderboard: boolean;
+    setShowLeaderboard: Dispatch<SetStateAction<boolean>>;
+    photoUrl: string|null;
+    setPhotoUrl: Dispatch<SetStateAction<string|null>>;
+}

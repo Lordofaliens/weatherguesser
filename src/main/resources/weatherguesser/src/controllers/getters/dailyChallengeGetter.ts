@@ -1,7 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
 import axios from 'axios';
-import user from "../../contexts/userContext";
-
 
 export const getDailyChallenge = async () => {
     try {

@@ -1,7 +1,5 @@
-import React, {useEffect, useState, useRef} from 'react';
 import axios from 'axios';
-import user from "../../contexts/userContext";
-
+import user from "../../interfaces/IUser";
 
 export const getUserData = async (token : string) => {
     try {

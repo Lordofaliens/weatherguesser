@@ -1,14 +1,20 @@
-import React, { useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {useHomeContext} from "../../contexts/HomeContext";
+import {IScaleProps} from "../../interfaces/IProps";
 
-interface ScaleProps {
-    accuracy: number;
-}
+const Scale: React.FC<IScaleProps> = () => {
+    const {
+        accuracy
+    } = useHomeContext();
+    const [accuracyDegrees, setAccuracyDegrees] = useState<number>(Math.PI + (Math.PI * accuracy / 100));
+    useEffect(() => {
+        setAccuracyDegrees(Math.PI + (Math.PI * accuracy / 100));
+    }, [accuracy]);
 
-const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     let startAngle = Math.PI;
     let endAngle = Math.PI;
-    let animationFrameId: number = 0; // Initialize animationFrameId with a default value
+    let animationFrameId: number = 0;
 
     const animate = () => {
         const canvas = canvasRef.current;
@@ -19,7 +25,7 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        endAngle += 0.03; // Adjust the increment to control the animation speed
+        endAngle += 0.03;
 
         const gradient = ctx.createLinearGradient(
             Math.cos(startAngle) * 210 + 210,
@@ -28,8 +34,8 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
             210
         );
 
-        gradient.addColorStop(0, 'rgba(245, 83, 61, 1)');
-        gradient.addColorStop(1, 'rgba(61, 245, 150, 1)');
+        gradient.addColorStop(0, 'rgba(245, 245, 245, 1)');
+        gradient.addColorStop(1, 'rgba(46, 128, 176, 1)');
 
         ctx.strokeStyle = gradient;
         ctx.lineWidth = 20;
@@ -42,7 +48,7 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
         ctx.arc(220, 210, 200, startAngle, endAngle);
         ctx.stroke();
 
-        if (endAngle < accuracy) {
+        if (endAngle < accuracyDegrees) {
             animationFrameId = requestAnimationFrame(animate);
         }
     };
@@ -54,9 +60,9 @@ const Scale: React.FC<ScaleProps> = ({ accuracy }) => {
         return () => {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [accuracy]); // Include 'main' in the dependency array
+    }, [accuracyDegrees]);
 
-    return <canvas ref={canvasRef} width={430} height={235} style={{zIndex:"1"}}/>;
+    return <canvas ref={canvasRef} width={430} height={235} className="z-10" />;
 }
 
 export default Scale;

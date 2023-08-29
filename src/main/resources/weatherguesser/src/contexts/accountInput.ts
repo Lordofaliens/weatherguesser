@@ -3,16 +3,17 @@ import {styled} from "@mui/material";
 export default styled('div')({
     padding: '1px',
     borderRadius: '5px',
-    backgroundImage: 'linear-gradient(to right, #fca5f1, #fca5f1, #fbb0f4, #fbb0f4, #c5d9f5, #c5d9f5, #b2d7f9, #b2d7f9)',
+    backgroundImage: 'linear-gradient(to right, rgba(245, 245, 245, 1), rgba(45, 130, 178, 1))',
     color: 'white',
     '& .MuiOutlinedInput-input': {
         padding: '4px',
         fontWeight: 'bold',
         width: '100%',
         height: '100%',
-        color: 'white',
+        color: 'white',textAlign: 'right',
         '&::placeholder': {
             color: 'white',
+            textAlign: 'right',
         },
     },
     '& label': {
@@ -22,7 +23,7 @@ export default styled('div')({
         color: 'transparent'
     },
     '& label.Mui-focused': {
-        color: '#b2d7f9'
+        color: 'rgba(45, 130, 178, 1)'
     },
     '& .MuiInput-underline:after': {
         borderBottomColor: '#B2BAC2',
@@ -32,10 +33,10 @@ export default styled('div')({
             borderColor: 'white',
         },
         '&:hover fieldset': {
-            borderColor: '#b2d7f9',
+            borderColor: 'rgba(245, 245, 245, 1)',
         },
         '&.Mui-focused fieldset': {
-            borderColor: '#fca5f1',
+            borderColor: 'rgba(45, 130, 178, 1)',
         },
     },
 });

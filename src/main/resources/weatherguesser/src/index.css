@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-first: rgba(245, 245, 245, 1);
+  --color-second: rgba(45, 130, 178, 1);
+  --color-red: rgba(245, 83, 61, 1);
+  --color-logo: #ffa404;
+}
+
 *{
   margin: 0;
   padding: 0;
@@ -23,73 +30,44 @@ body {
   overflow-y: hidden;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.blur-container {
+  margin: 10px;
+  padding: 10px;
+  backdrop-filter: blur(1px);
+  border-radius: 10px;
+  transition: backdrop-filter 0.5s ease, border-radius 0.5s ease;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index:-1;
+  top: 0;
 }
 
-.guessBtn {
-  width:40px;
-  height: 40px;
-  border-radius: 50%;
-  background-image: url("../public/guessBtn.png");
+/* Customize the scrollbar track */
+::-webkit-scrollbar {
+  width: 6px; /* Width of the scrollbar */
 }
 
-.selected {
-  transition: all 0.3s ease-in-out;
-  color: red;
+/* Customize the scrollbar thumb (handle) */
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-second); /* Color of the thumb */
+  border-bottom-left-radius: 3px; /* Rounded corners for the thumb */
+  border-top-left-radius: 3px;
 }
 
-.notSelected {
-  transition: all 0.3s ease-in-out;
-  color: green;
+/* Customize the scrollbar track on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-second); /* Color of the thumb on hover */
 }
 
-
-@keyframes fadeScale {
-  0% {
-    scale: 0;
-  }
-  100% {
-    scale: 1;
-  }
+/* Customize the scrollbar track */
+::-webkit-scrollbar-track {
+  background-color: var(--color-first); /* Color of the track */
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
 }
 
-@keyframes fadeOpacity {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-opacity {
-  animation: fadeOpacity 1s ease-in-out;
-}
-
-.animate-scale {
-  animation: fadeScale 1s ease-in-out;
-}
-
-.gradient-bg {
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-}
-
-.selectedAccForm {
-  background-color: white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+/* Customize the scrollbar track on hover */
+::-webkit-scrollbar-track:hover {
+  background-color: var(--color-first); /* Color of the track on hover */
 }
