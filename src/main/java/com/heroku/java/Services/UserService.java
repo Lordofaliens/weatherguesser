@@ -3,12 +3,14 @@ package com.heroku.java.Services;
 import com.heroku.java.Entitites.Weather.Weather;
 import com.heroku.java.Exceptions.InvalidGuessException;
 import com.heroku.java.Exceptions.InvalidTokenException;
+import com.heroku.java.Exceptions.InvalidWeatherDBException;
 import com.heroku.java.Exceptions.UnknownUserException;
 import com.heroku.java.Repositories.UserRepository;
 import com.heroku.java.Entitites.User.User;
-import io.github.cdimascio.dotenv.Dotenv;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,8 +18,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -30,6 +30,8 @@ public class UserService {
     private MongoTemplate mongoTemplate;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private PasswordResetTokenService passwordResetTokenService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -41,6 +43,10 @@ public class UserService {
 
     public Optional<User> getUserByName(String username) {
         return userRepository.findByName(username);
+    }
+
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User getUserData(String token) throws UnknownUserException {
@@ -79,33 +85,27 @@ public class UserService {
         return u.get();
     }
 
-    public User changePassword(String token, String newPassword) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
-        String userId = claims.getSubject();
-        Optional<User> u = this.getSingleUser(userId);
-        u.ifPresent((res) -> {
-            u.get().setPassword(newPassword);
-            mongoTemplate.update(User.class)
-                    .matching(Criteria.where("userId").is(u.get().getUserId()))
-                    .apply(new Update().set("password", u.get().getPassword()))
-                    .first();
-            //rerender new leaderboard
-        });
-        return u.get();
-    }
+//    public User changePassword(String token, String newPassword) {
+//        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+//        String userId = claims.getSubject();
+//        Optional<User> u = this.getSingleUser(userId);
+//        u.ifPresent((res) -> {
+//            u.get().setPassword(newPassword);
+//            mongoTemplate.update(User.class)
+//                    .matching(Criteria.where("userId").is(u.get().getUserId()))
+//                    .apply(new Update().set("password", u.get().getPassword()))
+//                    .first();
+//            //rerender new leaderboard
+//        });
+//        return u.get();
+//    }
 
-    public User changeEmail(String token, String newEmail) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
-        String userId = claims.getSubject();
+    public User changeEmail(String userId, String newEmail) {
         Optional<User> u = this.getSingleUser(userId);
-        u.ifPresent((res) -> {
-            u.get().setEmail(newEmail);
-            mongoTemplate.update(User.class)
-                    .matching(Criteria.where("userId").is(u.get().getUserId()))
-                    .apply(new Update().set("email", u.get().getEmail()))
-                    .first();
-            //rerender new leaderboard
-        });
+        u.ifPresent((res) -> mongoTemplate.update(User.class)
+                .matching(Criteria.where("userId").is(userId))
+                .apply(new Update().set("email", newEmail))
+                .first());
         return u.get();
     }
 
@@ -129,12 +129,10 @@ public class UserService {
         Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
-        u.ifPresent((res) -> {
-            mongoTemplate.update(User.class)
-                    .matching(Criteria.where("userId").is(u.get().getUserId()))
-                    .apply(new Update().set("currentStreak", newStreak))
-                    .first();
-        });
+        u.ifPresent((res) -> mongoTemplate.update(User.class)
+                .matching(Criteria.where("userId").is(u.get().getUserId()))
+                .apply(new Update().set("currentStreak", newStreak))
+                .first());
         return u.get();
     }
 
@@ -168,12 +166,27 @@ public class UserService {
         return u.get();
     }
 
-    public String add(String name, String password, String email) {
+    public void addPreEmail(String name, String password, String email) {
         User u = new User(name, password, email, this.userRepository.findAll().size());
-        String token = tokenService.generateToken(u.getUserId());
+        passwordResetTokenService.verifyEmail(u);
+        //rerender new leaderboard
+    }
+
+    public String addPostEmail(String initToken) {
+        Claims claims = decodeToken(initToken); //CHANGE TO .ENV
+        User u = new User(
+                claims.get("userId", String.class),
+                claims.get("name", String.class),
+                claims.get("password", String.class),
+                claims.get("email", String.class),
+                claims.get("location", String.class),
+                claims.get("registration", Date.class),
+                claims.get("rating", Integer.class)
+                );
+
+        String token = TokenService.generateToken(u.getUserId());
         u.setToken(token);
         mongoTemplate.insert(u);
-        //rerender new leaderboard
         return token;
     }
 
@@ -200,7 +213,7 @@ public class UserService {
                     break;
                 }
             }
-            guesses.add(new String(city+";"+guess));
+            guesses.add(city + ";" + guess);
             mongoTemplate.update(User.class)
                     .matching(Criteria.where("userId").is(u.get().getUserId()))
                     .apply(new Update().set("guess", guesses))
@@ -226,7 +239,7 @@ public class UserService {
         return 0;
     }
 
-    public void updateUsers(List<User> users, List<Weather> weathers) {
+    public void updateUsers(List<User> users, List<Weather> weathers) throws InvalidWeatherDBException {
         for (User u : users) {
             List<String> guesses = u.getGuess();
             for(String guess : guesses) {
@@ -283,19 +296,12 @@ public class UserService {
 //        } else throw new tokenException();
 //    }
 //
-//    public void resetPassword(String token, String newPassword) {
-//        Optional<User> user = userRepository.findByResetToken(token);
-//
-//        if (user.isPresent() && isTokenValid(user.get())) {
-//            user.get().setPassword(passwordEncoder.encode(newPassword));
-//            user.get().setResetToken(null);
-//            user.get().setResetTokenExpiry(null);
-//            mongoTemplate.update(User.class)
-//                    .matching(Criteria.where("userId").is(user.get().getUserId()))
-//                    .apply(new Update().set("password", user.get().getPassword()).set("resetToken", null).set("resetTokenExpiry", null))
-//                    .first();
-//        }
-//    }
+    public void changePassword(String userId, String newPassword) {
+            mongoTemplate.update(User.class)
+                    .matching(Criteria.where("userId").is(userId))
+                    .apply(new Update().set("password", newPassword))
+                    .first();
+    }
 //
 //    private String generateToken() {
 //        return UUID.randomUUID().toString();
@@ -314,4 +320,10 @@ public class UserService {
 //                + "https://yourapp.com/reset-password/" + token);
 //        javaMailSender.send(message);
 //    }
+    public Claims decodeToken(String token) {
+        return Jwts.parser()
+                .setSigningKey("your-secret-key")
+                .parseClaimsJws(token)
+                .getBody();
+    }
 }

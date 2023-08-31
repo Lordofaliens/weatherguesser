@@ -14,8 +14,15 @@ const Auth: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [userData, setUserData] = useState<IAuthData>({name: '', email: '', password: ''});
     const uniquenessHandlerInstance = new UniquenessHandler();
-
+    const [isReset, setIsReset] = useState(false);
     const handleLogin = async () => {
+        toast.dismiss();
+        toast.info("Logging in...", {
+            position: toast.POSITION.TOP_CENTER,
+            draggablePercent: 50,
+            role: "alert",
+            autoClose: 6000
+        })
         try {
             await serverRequest("login");
         } catch (error) {
@@ -24,6 +31,13 @@ const Auth: React.FC = () => {
     }
 
     const handleRegister = async () => {
+        toast.dismiss();
+        toast.info("Creating user...", {
+            position: toast.POSITION.TOP_CENTER,
+            draggablePercent: 50,
+            role: "alert",
+            autoClose: 6000
+        })
         try {
             const check1 = await uniquenessHandlerInstance.checkUsername(userData.name);
             const check2 = await uniquenessHandlerInstance.checkEmail(userData.email);
@@ -53,14 +67,16 @@ const Auth: React.FC = () => {
         try {
             const response = await axios.post<string>(`http://localhost:5000/api/user/${type}`, userData);
             if (response.data === "user_not_found") {
+                toast.dismiss();
                 toast.error("User not found!", {
                     position: toast.POSITION.TOP_CENTER,
                     draggablePercent: 50,
                     role: "alert"
                 });
             } else {
-                localStorage.setItem("token", JSON.stringify(response.data));
-                toast.success(`${type === "login" ? "Logged in! You will be redirected to your account!" : "User created! You will be redirected to your account!"}`, {
+                if(type === "login") localStorage.setItem("token", JSON.stringify(response.data));
+                toast.dismiss();
+                toast.success(`${type === "login" ? "Logged in! You will be redirected to your account!" : `User created! Finish registration at ${userData.email}!`}`, {
                     position: toast.POSITION.TOP_CENTER,
                     draggablePercent: 50,
                     autoClose: 3000,
@@ -74,6 +90,42 @@ const Auth: React.FC = () => {
             console.error('Request failed:', error);
         }
     }
+
+    const resetPassword = async () => {
+        console.log("button clicked")
+        const email = (document.getElementById("emailInput") as HTMLInputElement).value;
+        console.log(`/${email}/`)
+        let message = "";
+        if(email.length < 5) message = "Email too short. Make it at least 5 symbols!";
+        if(email.indexOf("@")===-1||email.indexOf(".")===-1) message = "Email should contain '@' and '.'!";
+        if(message!=="") {
+            toast.dismiss();
+            toast.error(message, {
+                position: toast.POSITION.TOP_CENTER,
+                draggablePercent: 50,
+                role: "alert",
+                autoClose: 6000
+            })
+            return 1;
+        }
+        try {
+            toast.dismiss();
+            toast.success(`Check ${email}!`, {
+                position: toast.POSITION.TOP_CENTER,
+                draggablePercent: 50,
+                role: "alert",
+                autoClose: 6000
+            })
+            const response = await axios.post(`http://localhost:5000/password-reset/request?email=${email}`);
+            console.log(response.data);
+            setIsReset(false);
+            (document.getElementById("emailInput") as HTMLInputElement).value = "";
+            return 0;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     return (
         localStorage.getItem("token")==null ? (
@@ -107,7 +159,19 @@ const Auth: React.FC = () => {
                             </AccountInput>
                         </div>
                     }
-                    {isLogin && <div className="flex justify-end pt-2 pb-2 text-sm font-normal text-gray-300"><Link to={"."}>Forgot password?</Link></div>}
+                    {isLogin && <div className="flex justify-end pt-2 pb-2 text-sm font-normal text-gray-300">
+                        {isReset ? (
+                                <>
+                                    <AccountInput>
+                                        <TextField  type={"text"}  id="emailInput" placeholder={`type your email`} onChange={(e) => setUserData({ ...userData, email: e.target.value })} />
+                                    </AccountInput>
+                                    <button onClick={()=>resetPassword()} className="ml-3">Reset</button>
+                                </>
+                            )
+                                :
+                            (<button onClick={()=>setIsReset(true)}>Forgot password?</button>)
+                        }
+                    </div>}
                     {isLogin ?
                         <div className="flex justify-center pt-2">
                             <button onClick={()=>handleLogin()} className="text-second rounded-lg p-2 pl-5 pr-5 border-4 hover:border-second hover:shadow-md ease-in-out duration-500">Login</button>

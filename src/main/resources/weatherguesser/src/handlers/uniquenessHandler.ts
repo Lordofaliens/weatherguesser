@@ -8,8 +8,8 @@ class UniquenessHandler {
             if(username.length < 16) {
                 try {
                     const response = await axios.get<string>(`http://localhost:5000/api/user/uniqueUsername?name=${username}`);
-                    if(response.data==="1") {
-                        toast.error("Username is not unique!", {
+                    if(JSON.parse(response.data)===1) {
+                        toast.error("Username is already used!", {
                             position: toast.POSITION.TOP_CENTER,
                             draggablePercent: 50,
                             role: "alert"
@@ -40,11 +40,11 @@ class UniquenessHandler {
 
     checkEmail = async (email : string) => {
         if(email.length >= 5) {
-            if(email.indexOf("@")!==-1&&email.indexOf(".")!==-1&&email.indexOf("@")<email.indexOf(".")) {
+            if(email.indexOf("@")!==-1&&email.indexOf(".")!==-1) {
                 try {
                     const response = await axios.get<string>(`http://localhost:5000/api/user/uniqueEmail?email=${email}`);
-                    if(response.data==="1") {
-                        toast.error("Email is not unique!", {
+                    if(JSON.parse(response.data)===1) {
+                        toast.error("Email is already used!", {
                             position: toast.POSITION.TOP_CENTER,
                             draggablePercent: 50,
                             role: "alert"

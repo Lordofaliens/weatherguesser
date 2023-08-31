@@ -13,4 +13,3 @@ root.render(
 );
 
 //TODO: update page, output results of updated data at 12PM or first time user opens the app this day
-//TODO: update animation of city slider&btns

@@ -143,6 +143,36 @@
             <artifactId>dotenv-java</artifactId>
             <version>2.2.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-core</artifactId>-->
+<!--            <version>5.3.10</version> &lt;!&ndash; Use the version compatible with your project &ndash;&gt;-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-context</artifactId>-->
+<!--            <version>5.3.10</version> &lt;!&ndash; Use the version compatible with your project &ndash;&gt;-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>jakarta.platform</groupId>-->
+<!--            <artifactId>jakarta.jakartaee-api</artifactId>-->
+<!--            <version>9.0.0</version> &lt;!&ndash; Use the version compatible with your project &ndash;&gt;-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Jakarta Mail API &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>jakarta.mail</groupId>-->
+<!--            <artifactId>jakarta.mail-api</artifactId>-->
+<!--            <version>2.0.0</version> &lt;!&ndash; Use the version compatible with your project &ndash;&gt;-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Spring Scheduling &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-context-support</artifactId>-->
+<!--            <version>5.3.10</version> &lt;!&ndash; Use the version compatible with your project &ndash;&gt;-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

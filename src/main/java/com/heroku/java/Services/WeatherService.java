@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroku.java.Repositories.WeatherRepository;
 import com.heroku.java.Entitites.Weather.Weather;
-import jakarta.annotation.PostConstruct;
+
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,11 +16,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class WeatherService {
@@ -43,7 +41,7 @@ public class WeatherService {
         return "Unknown";
     }
 
-    public void updateWeatherData(double lat, double lon) throws IOException {
+    public void updateWeatherData(double lat, double lon) {
         AsyncHttpClient client = new DefaultAsyncHttpClient();
         Weather updatedWeather = new Weather();
         try {

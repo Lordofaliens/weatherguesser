@@ -47,6 +47,8 @@ module.exports = {
       },
       animation: {
         'gradientAnimation': 'gradientAnimation 15s ease-in-out infinite',
+        'moveLAnimation': 'moveL 2s ease-in-out infinite',
+        'moveRAnimation': 'moveR 2s ease-in-out infinite',
         'opacityAnimation': 'opacity 1s ease-in-out',
         'scaleAnimation': 'scale 1s ease-in-out',
         'scaleLargeAnimation': 'scaleLarge 1s ease-in-out',
@@ -89,6 +91,16 @@ module.exports = {
       opacity: {
         '0%': {opacity: 0},
         '100%': {opacity: 1}
+      },
+      moveL: {
+        '0%': {transform: 'translateX(0px)'},
+        '50%': {transform: 'translateX(-10px)'},
+        '100%': {transform: 'translateX(0px)'}
+      },
+      moveR: {
+        '0%': {transform: 'translateX(0px)'},
+        '50%': {transform: 'translateX(10px)'},
+        '100%': {transform: 'translateX(0px)'}
       }
     },
   },

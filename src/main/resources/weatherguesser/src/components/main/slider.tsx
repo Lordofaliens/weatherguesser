@@ -70,11 +70,11 @@ const Slider: React.FC<ISliderProps> = () => {
         <div className="relative">
             <div ref={sliderRef} className="flex justify-between w-slider min-w-account">
                 <button key={"previousCity"} onClick={() => previousCityHandler()}>
-                    <img alt="left" src={"./icons/left.png"} />
+                    <img alt="left" src={"./icons/left.png"} className="hover:animate-moveLAnimation"/>
                 </button>
                 <p key={city} className="text-5xl text-center text-logo animate-scaleLargeAnimation">{city}</p>
                 <button key={"nextCity"} onClick={() => nextCityHandler()}>
-                    <img alt="right" src={"./icons/right.png"} />
+                    <img alt="right" src={"./icons/right.png"} className="hover:animate-moveRAnimation"/>
                 </button>
             </div>
             {city===dailyChallenge[0] && (
@@ -85,10 +85,10 @@ const Slider: React.FC<ISliderProps> = () => {
                             style={{ width: `${(currentStreak/(highStreak+1))*100}%`, animation: 'fillAnimation 1.5s ease-out'}}
                         />
                     </div>
-                    {currentStreak===highStreak?
+                    {currentStreak===highStreak&&currentStreak!==0?
                         <p>You are on fire!</p>
                         :
-                        <p>Breaking the record of {highStreak}</p>
+                        <p>Breaking the record of {highStreak+1}</p>
                     }
                 </div>
             )}

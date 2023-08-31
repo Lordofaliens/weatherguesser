@@ -1,14 +1,11 @@
 package com.heroku.java.Entitites.LeaderBoard;
 
-import com.heroku.java.Entitites.User.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Document(collection = "leaderBoard")
 public class LeaderBoard {
@@ -45,12 +42,11 @@ public class LeaderBoard {
     }
 
     public LeaderBoard() {
-        this.users = new ArrayList<String>();
+        this.users = new ArrayList<>();
     }
 
     public LeaderBoard(ArrayList<String> users) {
         this.users = users;
     }
 
-    public void updateLeaderBoard() {}; //UPDATE EVERYDAY 00:00 GMT
 }

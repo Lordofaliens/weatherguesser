@@ -23,7 +23,7 @@ export const setUserName = async (token : string, name: string) => {
                 return 1;
             } else {
                 const response = await axios.post<user>(`http://localhost:5000/api/user/changeName`, data, {headers});
-                toast.success(`Your name changed to ${name} successfully!`, {
+                toast.success(`Your name is changed to ${name} successfully!`, {
                     position: toast.POSITION.TOP_CENTER,
                     draggablePercent: 50,
                     autoClose: 3000,

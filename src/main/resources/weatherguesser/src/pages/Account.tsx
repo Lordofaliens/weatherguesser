@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import TextField from '@mui/material/TextField';
 import { v4 as uuidv4 } from 'uuid';
-import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {setUserName} from "../controllers/setters/userNameSetter";
 import {setUserPassword} from "../controllers/setters/userPasswordSetter";
@@ -9,6 +10,7 @@ import {setUserEmail} from "../controllers/setters/userEmailSetter";
 import {Link, useNavigate} from "react-router-dom";
 import AccountInput from '../contexts/accountInput';
 import {useHomeContext} from "../contexts/HomeContext";
+import UniquenessHandler from "../handlers/uniquenessHandler";
 
 const Account: React.FC = () => {
     const {
@@ -24,6 +26,7 @@ const Account: React.FC = () => {
         currentStreak,
         totalGuesses
     } = useHomeContext();
+    const uniquenessHandlerInstance = new UniquenessHandler();
 
     const [editState, setEditState] = useState<boolean[]>([false,false,false]);
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -56,8 +59,27 @@ const Account: React.FC = () => {
             case "Email":
                 if(updatedEditState[2]) {
                     const newEmail = (document.getElementById("accountEmailInput") as HTMLInputElement).value;
-                    if(email!==newEmail) {
-                        if(await setUserEmail(JSON.parse(localStorage.getItem("token") as string), newEmail)!==1) setEmail(newEmail);
+                    const emailCheck = await uniquenessHandlerInstance.checkEmail(newEmail);
+                    if(emailCheck!=="Success!") {
+                        toast.error(emailCheck, {
+                            position: toast.POSITION.TOP_CENTER,
+                            draggablePercent: 50,
+                            role: "alert",
+                            autoClose: 6000
+                        })
+                    } else if(email!==newEmail) {
+                        toast.success(`Check ${newEmail}!`, {
+                            position: toast.POSITION.TOP_CENTER,
+                            draggablePercent: 50,
+                            role: "alert",
+                            autoClose: 6000
+                        })
+                        try {
+                            const response = await axios.post(`http://localhost:5000/password-reset/requestEmail?oldEmail=${email}&newEmail=${newEmail}`);
+                            console.log(response.data);
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }
                 }
                 updatedEditState[2] = !updatedEditState[2];
@@ -65,8 +87,6 @@ const Account: React.FC = () => {
                 break;
         }
     }
-
-    const handleShowPassword = () => { setShowPassword(!showPassword)}
 
     const fields = ["Name", "Password", "Email"];
 
@@ -76,6 +96,21 @@ const Account: React.FC = () => {
     function logout() {
         localStorage.removeItem("token");
         navigate('../auth');
+    }
+
+    const handleResetPassword = async () => {
+        toast.success(`Check ${email}!`, {
+            position: toast.POSITION.TOP_CENTER,
+            draggablePercent: 50,
+            role: "alert",
+            autoClose: 6000
+        })
+        try {
+            const response = await axios.post(`http://localhost:5000/password-reset/request?email=${email}`);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -103,20 +138,18 @@ const Account: React.FC = () => {
                                         <TextField  placeholder={`type new ${field.toLowerCase()}`} label={fieldStateMapping[fields.indexOf(field)]} id={`account${field}Input`} />
                                     </AccountInput>
                                     :
-                                    <span className="text-gray-300 mr-3">{ field==="Password"&&!showPassword ? "*******" : fieldStateMapping[fields.indexOf(field)]}</span>
+                                    <span className="text-gray-300 mr-3">{ field==="Password" ? "*******" : fieldStateMapping[fields.indexOf(field)]}</span>
                                 }
-                                {field==="Password"&&!editState[fields.indexOf(field)] && (
-                                    <button className="text-gray-300 mr-3" onClick={()=>handleShowPassword()}>
-                                        {!showPassword?<img alt="opened eye" src="./icons/openeye.png" className="w-diffIcon" />:<img alt="closed eye" src="./icons/closedeye.png" className="w-diffIcon" />}
-                                    </button>)
+                                {field==="Password"&&!editState[fields.indexOf(field)] && <button onClick={()=>handleResetPassword()} className="pl-4 text-yellow">Edit</button>}
+                                {field!=="Password" &&
+                                    <button  onClick={()=>handleChangeEdit(`${field}`)} className="pl-4">
+                                        {editState[fields.indexOf(field)]?
+                                            <span className="text-green">Apply</span>
+                                            :
+                                            <span className="text-yellow">Edit</span>
+                                        }
+                                    </button>
                                 }
-                                <button  onClick={()=>handleChangeEdit(`${field}`)} className="pl-4">
-                                    {editState[fields.indexOf(field)]?
-                                        <span className="text-green">Apply</span>
-                                        :
-                                        <span className="text-yellow">Edit</span>
-                                    }
-                                </button>
                             </div>
                         </div>
                     ))}

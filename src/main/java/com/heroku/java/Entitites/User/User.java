@@ -1,7 +1,6 @@
 package com.heroku.java.Entitites.User;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.time.Instant;
@@ -37,6 +36,7 @@ public class User {
     private String friends;
     private List<String> guess;
     private String token;
+    private String resetToken;
     private Date tokenExpiry;
 
 
@@ -115,6 +115,11 @@ public class User {
         this.token = token;
     }
 
+    public String getResetToken() { return this.resetToken; }
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
     public Date getTokenExpiry() { return this.tokenExpiry; }
     public void setTokenExpiry(Date tokenExpiry) {
         this.tokenExpiry = tokenExpiry;
@@ -134,7 +139,7 @@ public class User {
         this.currentStreak = 0;
         this.rating = 0;
         this.friends = "";
-        this.guess = new ArrayList<String>();
+        this.guess = new ArrayList<>();
     }
 
     public User(int userDBLength) {
@@ -151,7 +156,7 @@ public class User {
         this.currentStreak = 0;
         this.rating = userDBLength+1;
         this.friends = "";
-        this.guess = new ArrayList<String>();
+        this.guess = new ArrayList<>();
     }
 
     public User(String name, String password, String email, int userDBLength) {
@@ -166,15 +171,29 @@ public class User {
         this.currentStreak = 0;
         this.rating = userDBLength+1;
         this.friends = "";
-        this.guess = new ArrayList<String>();
+        this.guess = new ArrayList<>();
+    }
+
+    public User(String userId, String name, String password, String email, String location, Date registration, int rating) {
+        this.userId = userId;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.registration = registration;
+        this.location = location;
+        this.accuracy = 0;
+        this.highStreak = 0;
+        this.currentStreak = 0;
+        this.rating = rating;
+        this.friends = "";
+        this.guess = new ArrayList<>();
     }
 
     private Date generateRegistration() {
         LocalDateTime localDateTime = LocalDateTime.now();
         ZoneId zoneId = ZoneId.systemDefault();
         Instant instant = localDateTime.atZone(zoneId).toInstant();
-        Date date = Date.from(instant);
-        return date;
+        return Date.from(instant);
     }
 
     private String generateLocation() {
@@ -196,9 +215,7 @@ public class User {
                 }
                 reader.close();
                 JSONObject jsonResponse = new JSONObject(response.toString());
-                String city = jsonResponse.getString("city");
-
-                return city;
+                return jsonResponse.getString("city");
             } else {
                 System.out.println("Request failed with response code: " + responseCode);
             }

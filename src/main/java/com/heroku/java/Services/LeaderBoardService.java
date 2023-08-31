@@ -3,16 +3,15 @@ package com.heroku.java.Services;
 import com.heroku.java.Entitites.LeaderBoard.LeaderBoard;
 import com.heroku.java.Entitites.User.User;
 import com.heroku.java.Entitites.Weather.Weather;
+import com.heroku.java.Exceptions.InvalidWeatherDBException;
 import com.heroku.java.Repositories.LeaderBoardRepository;
 import com.heroku.java.Repositories.UserRepository;
 import com.heroku.java.Repositories.WeatherRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,17 +55,16 @@ public class LeaderBoardService {
         List<User> ans = new ArrayList<>();
         for(String id : ids) {
             Optional<User> u = userRepository.findUserByUserId(id);
-            if(u.isPresent()) {
-                ans.add(u.get());
-            }
+            u.ifPresent(ans::add);
         }
         return ans;
     }
 
-    public String[] getDailyWeather() {
-        LeaderBoard lb = leaderBoardRepository.findLeaderBoardByLeaderBoardId(0).get();
-        String[] res = new String[] {lb.getDailyChallengeCity(), lb.getDailyChallengeDifficulty()};
-        return res;
+    public String[] getDailyWeather() throws InvalidWeatherDBException {
+        if(leaderBoardRepository.findLeaderBoardByLeaderBoardId(0).isPresent()) {
+            LeaderBoard lb = leaderBoardRepository.findLeaderBoardByLeaderBoardId(0).get();
+            return new String[] {lb.getDailyChallengeCity(), lb.getDailyChallengeDifficulty()};
+        } else throw new InvalidWeatherDBException();
     }
 
     public String[] updateDailyWeather() {

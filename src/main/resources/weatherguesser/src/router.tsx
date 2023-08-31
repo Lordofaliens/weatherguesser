@@ -4,10 +4,12 @@ import {HomeProvider} from "./contexts/HomeContext";
 import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Account from './pages/Account';
+import Reset from './pages/Reset';
 
 interface RouteConfig {
-    element: React.ReactNode;
+    element?: React.ReactNode;
     path: string;
+    children?: RouteConfig[];
 }
 
 const routes: RouteConfig[] = [
@@ -22,6 +24,31 @@ const routes: RouteConfig[] = [
     {
         element: <Auth />,
         path: '/auth'
+    },
+    {
+        element: <Reset type={"password"} />,
+        path: '/resetpassword'
+    },
+    {
+        element: <Reset type={"email"} />,
+        path: 'resetemail'
+    },
+    {
+        element: <Reset type={"verify"} />,
+        path: 'verifyemail'
+    },
+    {
+        path: '/reset',
+        children: [
+            {
+                element: <Reset type={"password"} />,
+                path: 'password'
+            },
+            {
+                element: <Reset type={"email"} />,
+                path: 'email'
+            }
+        ]
     }
 ];
 

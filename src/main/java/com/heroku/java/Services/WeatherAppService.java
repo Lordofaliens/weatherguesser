@@ -2,16 +2,13 @@ package com.heroku.java.Services;
 
 import com.heroku.java.Entitites.User.User;
 import com.heroku.java.Entitites.Weather.Weather;
-import com.heroku.java.Repositories.WeatherRepository;
+import com.heroku.java.Exceptions.InvalidWeatherDBException;
+
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -26,8 +23,6 @@ public class WeatherAppService {
     private WeatherService weatherService;
     @Autowired
     private LeaderBoardService leaderBoardService;
-    @Autowired
-    private MongoTemplate mongoTemplate;
     private String randomDailyCity = "London";
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -39,7 +34,6 @@ public class WeatherAppService {
         Calendar calendar = Calendar.getInstance();
         long currentTimeMillis = calendar.getTimeInMillis();
 
-        // Calculate the delay until 00:00 GMT of the next day
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -59,7 +53,7 @@ public class WeatherAppService {
                 this.userService.updateUsers(users, weathers);
                 this.leaderBoardService.sortNewLeaderBoard();
                 this.randomDailyCity = this.leaderBoardService.updateDailyWeather()[0];
-            } catch (IOException e) {
+            } catch (IOException | InvalidWeatherDBException e) {
                 throw new RuntimeException(e);
             }
         }, initialDelay, TimeUnit.DAYS.toMillis(1), TimeUnit.MILLISECONDS);

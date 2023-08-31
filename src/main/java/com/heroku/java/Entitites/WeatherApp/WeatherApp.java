@@ -1,7 +1,6 @@
 package com.heroku.java.Entitites.WeatherApp;
 
 import com.heroku.java.Entitites.LeaderBoard.LeaderBoard;
-import com.heroku.java.Entitites.User.User;
 import com.heroku.java.Entitites.Weather.Weather;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -29,7 +28,7 @@ public class WeatherApp {
     public WeatherApp() {
         this.id = UUID.randomUUID().toString();
         this.leaderBoard = new LeaderBoard();
-        this.weatherList = new ArrayList<Weather>(); //CHANGE TO GETTING WEATHER LIST FROM DB
+        this.weatherList = new ArrayList<>();
     }
 
     public WeatherApp(LeaderBoard leaderBoard, List<Weather> weatherList) {

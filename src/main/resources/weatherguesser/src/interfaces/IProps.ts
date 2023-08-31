@@ -21,3 +21,7 @@ export interface IDifficultyButtonsProps {
 
 export interface IDailyChallengeProps {
 }
+
+export interface IResetProps {
+    type: string;
+}
