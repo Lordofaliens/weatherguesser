@@ -13,6 +13,7 @@ const Reset: React.FC<IResetProps> = ({type}) => {
     const location = useLocation();
     const [token, setToken] = useState<string | null>("");
     const [email, setEmail] = useState<string | null>("");
+
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         setToken(searchParams.get('token'));
@@ -47,7 +48,7 @@ const Reset: React.FC<IResetProps> = ({type}) => {
     useEffect(() => {
         if(type==="email"&&email!=="") {
             try {
-                const response = axios.post(`http://localhost:5000/password-reset/receiveEmail?token=${token}&email=${email}`);
+                const response = axios.post(`http://localhost:5000/data-reset/receiveEmail?token=${token}&email=${email}`);
                 toast.dismiss();
                 toast.success("Email is changed successfully!", {
                     position: toast.POSITION.TOP_CENTER,
@@ -83,7 +84,7 @@ const Reset: React.FC<IResetProps> = ({type}) => {
             console.error(error);
         }
         try {
-            const response = await axios.post(`http://localhost:5000/password-reset/receive?token=${token}&password=${password}`);
+            const response = await axios.post(`http://localhost:5000/data-reset/receivePassword?token=${token}&password=${password}`);
             (document.getElementById("passwordResetInput") as HTMLInputElement).value = "";
             toast.dismiss();
             toast.success("Password is changed successfully!", {

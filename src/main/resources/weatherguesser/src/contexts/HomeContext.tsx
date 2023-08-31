@@ -87,6 +87,17 @@ export const HomeProvider: React.FC<{ children: React.ReactNode }> = ({ children
         makeGuess();
     }, [guess]);
 
+    const fetchPhoto = () => {
+        axios.get(`http://localhost:5000/api/photo/get?city=${city}`, { responseType: 'arraybuffer' })
+            .then(response => {
+                const imageBlob = new Blob([response.data], { type: 'image/jpeg' });
+                setPhotoUrl(URL.createObjectURL(imageBlob));
+            })
+            .catch(error => {
+                console.error('Error fetching photo:', error);
+            });
+    };
+
     useEffect(() => {
         fetchPhoto();
         if(city===dailyChallenge[0]) {
@@ -134,16 +145,7 @@ export const HomeProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
     };
 
-    const fetchPhoto = () => {
-        axios.get(`http://localhost:5000/api/photo/get?city=${city}`, { responseType: 'arraybuffer' })
-            .then(response => {
-                const imageBlob = new Blob([response.data], { type: 'image/jpeg' });
-                setPhotoUrl(URL.createObjectURL(imageBlob));
-            })
-            .catch(error => {
-                console.error('Error fetching photo:', error);
-            });
-    };
+
 
     return (
         <HomeContext.Provider

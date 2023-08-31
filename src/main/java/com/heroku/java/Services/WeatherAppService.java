@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,8 +35,8 @@ public class WeatherAppService {
         Calendar calendar = Calendar.getInstance();
         long currentTimeMillis = calendar.getTimeInMillis();
 
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.MINUTE, 16);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long nextExecutionTimeMillis = calendar.getTimeInMillis();
@@ -53,6 +54,7 @@ public class WeatherAppService {
                 this.userService.updateUsers(users, weathers);
                 this.leaderBoardService.sortNewLeaderBoard();
                 this.randomDailyCity = this.leaderBoardService.updateDailyWeather()[0];
+                System.out.println("Main process");
             } catch (IOException | InvalidWeatherDBException e) {
                 throw new RuntimeException(e);
             }
@@ -60,4 +62,3 @@ public class WeatherAppService {
         return 0;
     }
 }
-//IMPROVE CODE BY USING HASHMAP INSTEAD OF n^3 EFFICIENCY, use sorting to avoid the third cycle

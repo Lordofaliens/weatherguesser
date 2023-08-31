@@ -6,7 +6,6 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {setUserName} from "../controllers/setters/userNameSetter";
 import {setUserPassword} from "../controllers/setters/userPasswordSetter";
-import {setUserEmail} from "../controllers/setters/userEmailSetter";
 import {Link, useNavigate} from "react-router-dom";
 import AccountInput from '../contexts/accountInput';
 import {useHomeContext} from "../contexts/HomeContext";
@@ -19,7 +18,6 @@ const Account: React.FC = () => {
         password,
         setPassword,
         email,
-        setEmail,
         rating,
         accuracy,
         highStreak,
@@ -27,11 +25,14 @@ const Account: React.FC = () => {
         totalGuesses
     } = useHomeContext();
     const uniquenessHandlerInstance = new UniquenessHandler();
+    const navigate = useNavigate();
+    if(!localStorage.getItem("token")) navigate("../auth");
 
     const [editState, setEditState] = useState<boolean[]>([false,false,false]);
-    const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    const navigate = useNavigate();
+    const fields = ["Name", "Password", "Email"];
+    const fieldStateMapping = [name, password, email];
+    const successGuess = totalGuesses * accuracy / 100;
 
     const handleChangeEdit = async (category : string) => {
         const updatedEditState = [...editState];
@@ -75,7 +76,7 @@ const Account: React.FC = () => {
                             autoClose: 6000
                         })
                         try {
-                            const response = await axios.post(`http://localhost:5000/password-reset/requestEmail?oldEmail=${email}&newEmail=${newEmail}`);
+                            const response = await axios.post(`http://localhost:5000/data-reset/requestEmail?oldEmail=${email}&newEmail=${newEmail}`);
                             console.log(response.data);
                         } catch (error) {
                             console.error(error);
@@ -88,16 +89,6 @@ const Account: React.FC = () => {
         }
     }
 
-    const fields = ["Name", "Password", "Email"];
-
-    const fieldStateMapping = [name, password, email];
-    const successGuess = totalGuesses * accuracy / 100;
-
-    function logout() {
-        localStorage.removeItem("token");
-        navigate('../auth');
-    }
-
     const handleResetPassword = async () => {
         toast.success(`Check ${email}!`, {
             position: toast.POSITION.TOP_CENTER,
@@ -106,11 +97,16 @@ const Account: React.FC = () => {
             autoClose: 6000
         })
         try {
-            const response = await axios.post(`http://localhost:5000/password-reset/request?email=${email}`);
+            const response = await axios.post(`http://localhost:5000/data-reset/requestPassword?email=${email}`);
             console.log(response.data);
         } catch (error) {
             console.error(error);
         }
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        navigate('../auth');
     }
 
     return (

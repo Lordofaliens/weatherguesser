@@ -31,10 +31,4 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-    //TODO: check other todos
-    //TODO: update security code for tokens and store it correctly
-    //TODO: optimize reset token code
-    //TODO: delete commented code
-    //TODO: fix terminal "JSONObject["city"] not found." error\
-    //TODO: check front code with reset functions
 }

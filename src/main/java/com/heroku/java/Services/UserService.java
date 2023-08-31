@@ -8,6 +8,7 @@ import com.heroku.java.Exceptions.UnknownUserException;
 import com.heroku.java.Repositories.UserRepository;
 import com.heroku.java.Entitites.User.User;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
@@ -31,7 +32,8 @@ public class UserService {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private PasswordResetTokenService passwordResetTokenService;
+    private ResetTokenService passwordResetTokenService;
+    private final String jwtSecretKey = Dotenv.configure().load().get("SECRET_KEY");
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -50,17 +52,17 @@ public class UserService {
     }
 
     public User getUserData(String token) throws UnknownUserException {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         if (u.isPresent()) return u.get();
         throw new UnknownUserException();
     }
 
-    public String login(String name, String password) throws InvalidTokenException{ //ADD JAVA SECURITY
+    public String login(String name, String password) throws InvalidTokenException{
         Optional<User> user = this.userRepository.findByName(name);
         if(user.isPresent() && user.get().getPassword().equals(password)) {
-            String token = tokenService.generateToken(user.get().getUserId()); // Generate JWT token
+            String token = tokenService.generateToken(user.get().getUserId());
             mongoTemplate.update(User.class)
                     .matching(Criteria.where("userId").is(user.get().getUserId()))
                     .apply(new Update().set("token", token))
@@ -71,7 +73,7 @@ public class UserService {
     }
 
     public User changeName(String token, String newName) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
@@ -80,25 +82,9 @@ public class UserService {
                     .matching(Criteria.where("userId").is(u.get().getUserId()))
                     .apply(new Update().set("name", u.get().getName()))
                     .first();
-            //rerender new leaderboard
         });
         return u.get();
     }
-
-//    public User changePassword(String token, String newPassword) {
-//        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
-//        String userId = claims.getSubject();
-//        Optional<User> u = this.getSingleUser(userId);
-//        u.ifPresent((res) -> {
-//            u.get().setPassword(newPassword);
-//            mongoTemplate.update(User.class)
-//                    .matching(Criteria.where("userId").is(u.get().getUserId()))
-//                    .apply(new Update().set("password", u.get().getPassword()))
-//                    .first();
-//            //rerender new leaderboard
-//        });
-//        return u.get();
-//    }
 
     public User changeEmail(String userId, String newEmail) {
         Optional<User> u = this.getSingleUser(userId);
@@ -110,7 +96,7 @@ public class UserService {
     }
 
     public User changeHighStreak(String token) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
@@ -126,7 +112,7 @@ public class UserService {
     }
 
     public User changeCurrentStreak(String token, int newStreak) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> mongoTemplate.update(User.class)
@@ -137,7 +123,7 @@ public class UserService {
     }
 
     public User changeAccuracy(String token, int newAcc) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
@@ -152,7 +138,7 @@ public class UserService {
     }
 
     public User changeTotalGuesses(String token, int newTotalGuesses) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         u.ifPresent((res) -> {
@@ -168,12 +154,11 @@ public class UserService {
 
     public void addPreEmail(String name, String password, String email) {
         User u = new User(name, password, email, this.userRepository.findAll().size());
-        passwordResetTokenService.verifyEmail(u);
-        //rerender new leaderboard
+        passwordResetTokenService.verifyEmailSendEmail(u);
     }
 
     public String addPostEmail(String initToken) {
-        Claims claims = decodeToken(initToken); //CHANGE TO .ENV
+        Claims claims = decodeToken(initToken);
         User u = new User(
                 claims.get("userId", String.class),
                 claims.get("name", String.class),
@@ -191,7 +176,7 @@ public class UserService {
     }
 
     public int delete(String token) {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         if (u.isPresent()) {
@@ -202,7 +187,7 @@ public class UserService {
     }
 
     public List<String> makeGuess(String token, String city, String guess) throws InvalidGuessException {
-        Claims claims = Jwts.parser().setSigningKey("your-secret-key").parseClaimsJws(token).getBody(); //CHANGE TO .ENV
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody(); //CHANGE TO .ENV
         String userId = claims.getSubject();
         Optional<User> u = this.getSingleUser(userId);
         if(u.isPresent()) {
@@ -275,54 +260,16 @@ public class UserService {
         }
     }
 
-//    public void requestPasswordReset(String email) throws tokenException {
-//        Optional<User> user = userRepository.findByEmail(email);
-//        if (user.isPresent()) {
-//            String token = generateToken();
-//
-//            // Calculate token expiry date (1 hour from now)
-//            Calendar cal = Calendar.getInstance();
-//            cal.setTime(new Date());
-//            cal.add(Calendar.HOUR_OF_DAY, 1);
-//
-//            user.get().setResetToken(token);
-//            user.get().setResetTokenExpiry(cal.getTime());
-//            mongoTemplate.update(User.class)
-//                    .matching(Criteria.where("userId").is(user.get().getUserId()))
-//                    .apply(new Update().set("resetToken", user.get().getResetToken()).set("resetTokenExpiry", user.get().getResetTokenExpiry()))
-//                    .first();
-//
-//            sendResetEmail(user.get().getEmail(), token);
-//        } else throw new tokenException();
-//    }
-//
     public void changePassword(String userId, String newPassword) {
             mongoTemplate.update(User.class)
                     .matching(Criteria.where("userId").is(userId))
                     .apply(new Update().set("password", newPassword))
                     .first();
     }
-//
-//    private String generateToken() {
-//        return UUID.randomUUID().toString();
-//    }
-//
-//    private boolean isTokenValid(User user) {
-//        Date tokenExpiry = user.getResetTokenExpiry();
-//        return tokenExpiry != null && tokenExpiry.after(new Date());
-//    }
-//
-//    private void sendResetEmail(String email, String token) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(email);
-//        message.setSubject("Reset Your Password");
-//        message.setText("Click the following link to reset your password: "
-//                + "https://yourapp.com/reset-password/" + token);
-//        javaMailSender.send(message);
-//    }
+
     public Claims decodeToken(String token) {
         return Jwts.parser()
-                .setSigningKey("your-secret-key")
+                .setSigningKey(jwtSecretKey)
                 .parseClaimsJws(token)
                 .getBody();
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Scale from "../components/main/scale";
 import Digit from "../components/main/digit";
 import Slider from "../components/main/slider";
@@ -7,14 +7,46 @@ import GuessButtons from "../components/main/guessButtons";
 import Nav from "../components/nav/nav";
 import Leaderboard from "../components/main/leaderboard";
 import {useHomeContext} from "../contexts/HomeContext";
+import {toast, ToastContainer} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 const Home: React.FC = () => {
+    const navigate = useNavigate();
+    if(!localStorage.getItem("token")) navigate("../auth");
+
     const {
         backgroundColor,
         opacityBlack,
         opacityColor,
         photoUrl
     } = useHomeContext();
+
+    const [showToast, setShowToast] = useState(false);
+
+    useEffect(() => {
+        const today = new Date().toLocaleDateString();
+        const lastVisit = localStorage.getItem('lastVisit');
+
+        if (!lastVisit || lastVisit !== today) {
+            setShowToast(true);
+            localStorage.setItem('lastVisit', today);
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log("JUST TOAST")
+        if (showToast) {
+            console.log("NEW TOAST")
+            toast.dismiss();
+            toast.info(`Your stats are updated! Check account!`, {
+                position: toast.POSITION.TOP_CENTER,
+                draggablePercent: 50,
+                role: "alert",
+                autoClose: 6000
+            })
+            setShowToast(false);
+        }
+    }, [showToast]);
 
     return (
         <div
@@ -71,6 +103,7 @@ const Home: React.FC = () => {
                 </div>
                 <DifficultyButtons />
             </div>
+            <ToastContainer />
         </div>
     );
 };

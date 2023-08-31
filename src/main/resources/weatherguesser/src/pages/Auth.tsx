@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TextField from "@mui/material/TextField";
@@ -11,10 +11,12 @@ import IAuthData from "../interfaces/IAuthData";
 const Auth: React.FC = () => {
     const navigate = useNavigate();
     if(localStorage.getItem("token")) navigate("../account");
+
     const [isLogin, setIsLogin] = useState(true);
     const [userData, setUserData] = useState<IAuthData>({name: '', email: '', password: ''});
     const uniquenessHandlerInstance = new UniquenessHandler();
     const [isReset, setIsReset] = useState(false);
+
     const handleLogin = async () => {
         toast.dismiss();
         toast.info("Logging in...", {
@@ -116,7 +118,7 @@ const Auth: React.FC = () => {
                 role: "alert",
                 autoClose: 6000
             })
-            const response = await axios.post(`http://localhost:5000/password-reset/request?email=${email}`);
+            const response = await axios.post(`http://localhost:5000/data-reset/requestPassword?email=${email}`);
             console.log(response.data);
             setIsReset(false);
             (document.getElementById("emailInput") as HTMLInputElement).value = "";

@@ -1,4 +1,4 @@
-package com.heroku.java.Entitites.PasswordResetToken;
+package com.heroku.java.Entitites.ResetToken;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 @Document(collection = "passwordTokens")
-public class PasswordResetToken {
+public class ResetToken {
     @Id
     private ObjectId id;
 
@@ -23,12 +23,12 @@ public class PasswordResetToken {
     public Date getExpiryDate() {return this.expiryDate;}
     public void setExpiryDate(Date expiryDate) {this.expiryDate=expiryDate;}
 
-    public PasswordResetToken() {
+    public ResetToken() {
         this.token="";
         this.userId="";
     }
 
-    public PasswordResetToken(String userId, String token, Date expiryDate) {
+    public ResetToken(String userId, String token, Date expiryDate) {
         this.userId = userId;
         this.token = token;
         this.expiryDate = expiryDate;
